@@ -4,10 +4,19 @@ import Image from 'next/image'
 export default function RegisterPage() {
   return (
     <>
-      <div className="h-[175vh] flex flex-col lg:flex-row">
+      <div className="h-[170vh] lg:h-[100vh] flex flex-col lg:flex-row">
         <div className="flex-1 bg-gradient-to-b from-[#0C4A9D] to-[#47A6F9] text-white flex items-center p-8 flex-col h-screen lg:h-auto relative">
           <h1 className="text-3xl mt-14 font-inter">Bienvenido a</h1>
-          <Image className='mt-28' src="/cloudWhite.png" width={100} height={100} alt='Nuvora Chat logo'></Image>
+                      <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-60 lg:h-60 xl:w-72 xl:h-72 mt-28">
+  <Image
+    src="/cloudWhite.png"
+    alt="Nuvora Chat logo"
+    fill
+    className="object-contain"
+    sizes="(max-width: 768px) 96px, (max-width: 1280px) 218px, 218px"
+  />
+</div>
+ 
           <h1 className="text-4xl mt-6 font-madimi">Nuvora chat</h1>
 
 
@@ -141,7 +150,7 @@ export default function RegisterPage() {
                 Iniciar sesión
               </button>
             </div>
-            <p className = "flex justify-center mt-58">HazaelFG | AndreaLT</p>
+            <p className = "flex justify-center mt-52">HazaelFG | AndreaLT</p>
           </div>
         </div>
       </div>
