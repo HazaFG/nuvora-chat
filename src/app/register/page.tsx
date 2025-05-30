@@ -5,42 +5,53 @@ export default function RegisterPage() {
   return (
     <>
       <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] flex flex-col xl:flex-row">
+        {/* Contenedor del Gradiente - Sección Izquierda */}
         <div className="flex-1 bg-gradient-to-b from-[#0C4A9D] to-[#47A6F9] text-white flex items-center p-8 flex-col h-screen lg:h-auto relative">
-          <h1 className="text-3xl mt-14 font-inter md:hidden lg:hidden">Bienvenido a</h1>
-          <div className="relative 
-          w-24 h-24       /* Default (xs) - up to 639px */
+
+          {/* NUEVO DIV PARA AGRUPAR Y CENTRAR EL CONTENIDO FLEXIBLE */}
+          <div className="flex flex-col items-center flex-1 justify-center">
+
+            <h1 className="text-3xl mt-14 font-inter md:hidden lg:hidden">Bienvenido a</h1>
+            <div className="relative
+          w-24 h-24        /* Default (xs) - up to 639px */
           sm:w-32 sm:h-32 /* sm - 640px and up */
           md:w-48 md:h-48 /* md - 768px and up */
           lg:w-60 lg:h-60 /* lg - 1024px and up */
           xl:w-30 xl:h-30 /* xl - 1280px and up */
-          2xl:w-50 2xl:h-50 /* 2xl - 1536px and up */
+          2xl:w-70 2xl:h-70 /* 2xl - 1536px and up */
           mt-28
           sm:mt-38
-          lg:mt-68
+          lg:mt-50
           xl:mt-45
-            ">
-            <Image
-              src="/cloudWhite.png"
-              alt="Nuvora Chat logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-          <h1 className="text-4xl mt-6 font-madimi md:text-6xl">Nuvora chat</h1>
+          image-3xl
+        ">
+              <Image
+                src="/cloudWhite.png"
+                alt="Nuvora Chat logo"
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h1 className="text-4xl mt-6 font-madimi md:text-6xl 2xl:text-8xl">Nuvora chat</h1>
 
+            <p className='mt-14 text-center font-normal md:text-2xl lg:px-8 lg:text-xl lg:text-3xl xl:text-3xl xl:px-12 2xl:px-34'>
+              Conversaciones en tiempo real. Conexión sin límites. Diseñada para equipos, amigos y todos los que quieran estar conectados
+            </p>
 
+            {/*Oculto para pantallas menores a xl*/}
+            <p className='hidden xl:block mt-80 text-xl'>Hecho con pasión y propósito.</p>
 
-          <p className='mt-14 text-center md:text-2xl lg:px-8 lg:text-xl lg:text-3xl xl:text-3xl xl:px-12'>Conversaciones en tiempo real. Conexión sin límites.
-            Diseñada para equipos, amigos y todos los que quieran estar conectados</p>
+            {/* --- INICIO de la animación de flecha con Tailwind --- */}
+            <div className="mt-24 md:mt-32 lg:mt-46 xl:hidden flex justify-center items-center">
+              <svg className="w-20 h-20 text-white animate-bounce motion-reduce:animate-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            </div>
+            {/* --- FIN de la animación de flecha con Tailwind CSS --- */}
 
-          {/* --- INICIO de la animación de flecha con Tailwind --- */}
-          <div className="mt-24 md:mt-32 lg:mt-46 xl:hidden flex justify-center items-center">
-            <svg className="w-20 h-20 text-white animate-bounce motion-reduce:animate-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-            </svg>
-          </div>
-          {/* --- FIN de la animación de flecha con Tailwind CSS --- */}
+          </div> {/* FIN DEL NUEVO DIV */}
 
+          {/* El SVG de las nubes se mantiene fuera del nuevo div, porque es absoluto */}
           <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden xl:hidden" style={{ height: '130px' }}>
             <svg
               viewBox="0 0 1440 130"
@@ -84,24 +95,23 @@ export default function RegisterPage() {
               </g>
             </svg>
           </div>
+
+        </div> {/* FIN del Contenedor del Gradiente */}
+
+        {/*Aqui va la imagen de la nube feik */}
+        <div className="hidden xl:flex h-screen justify-start z-3">
+          <Image
+            src="/testing.png"
+            alt="Imagen test"
+            fill
+            className="object-contain -ml-14"
+            sizes="(max-height: 100vh) 33vw, 33vh"
+          />
         </div>
-        
-        {/*Aqui va la imagen de la nube feik*/}
 
-<div className="hidden xl:flex h-screen justify-start">
-  <Image
-    src="/testing.png"
-    alt="Imagen test"
-    fill
-    className="object-contain -ml-14"
-    sizes="(max-height: 100vh) 33vw, 33vh"
-  />
-</div>
-
-
-        {/* Sección derecha: background gris en mobile, blanco en desktop */}
+        {/* Sección derecha: contenedor del Formulario */}
         <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">
-          <div className="w-full md:max-w-lg lg:max-w-2xl xl:max-w-xl 2xl:max-w-2xl">
+          <div className="z-99 w-full md:max-w-lg lg:max-w-2xl xl:max-w-xl 2xl:max-w-4xl ">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 mb-8 text-center">
               Crea tu cuenta
             </h1>
@@ -117,7 +127,7 @@ export default function RegisterPage() {
               id="name"
               type="text"
               placeholder="Ingresa tu nombre"
-              className="w-full border-b-2 border-blue-500 focus:outline-none focus:border-blue-500 placeholder-gray-400 mb-8 lg:mb-12 lg:text-2xl"
+              className="w-full z-99 border-b-2 border-blue-500 focus:outline-none focus:border-blue-500 placeholder-gray-400 mb-8 lg:mb-12 lg:text-2xl"
             />
 
             {/* Correo */}
@@ -172,10 +182,9 @@ export default function RegisterPage() {
                 Iniciar sesión
               </button>
             </div>
-            <p className="flex justify-center mt-52 xl:hidden">HazaelFG | AndreaLT</p>
+            <p className="flex justify-center mt-52 xl:hidden">Hecho con pasión y propósito</p>
           </div>
         </div>
-      </div>
-    </>
-  )
+      </div >
+    </>)
 }

@@ -5,6 +5,14 @@ export default function LoginPage() {
       <p className="text-center text-sm text-gray-600">
         Inicia sesión para continuar
       </p>
+      <div className="
+  w-24 h-24
+  3xl:w-96 3xl:h-96
+  bg-blue-500
+">
+        Yo crezco en pantallas grandes 🖥️
+      </div>
+
     </div>
   );
 }
