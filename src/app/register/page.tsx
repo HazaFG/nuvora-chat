@@ -30,7 +30,7 @@ export default function RegisterPage() {
 
 
 
-          <p className='mt-14 text-center md:text-2xl lg:text-xl lg:text-3xl xl:text-3xl'>Conversaciones en tiempo real. Conexión sin límites.
+          <p className='mt-14 text-center md:text-2xl lg:px-8 lg:text-xl lg:text-3xl xl:text-3xl xl:px-12'>Conversaciones en tiempo real. Conexión sin límites.
             Diseñada para equipos, amigos y todos los que quieran estar conectados</p>
 
           {/* --- INICIO de la animación de flecha con Tailwind --- */}
@@ -85,10 +85,23 @@ export default function RegisterPage() {
             </svg>
           </div>
         </div>
+        
+        {/*Aqui va la imagen de la nube feik*/}
+
+<div className="hidden xl:flex h-screen justify-start">
+  <Image
+    src="/testing.png"
+    alt="Imagen test"
+    fill
+    className="object-contain -ml-14"
+    sizes="(max-height: 100vh) 33vw, 33vh"
+  />
+</div>
+
 
         {/* Sección derecha: background gris en mobile, blanco en desktop */}
         <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">
-          <div className="w-full md:max-w-lg lg:max-w-2xl">
+          <div className="w-full md:max-w-lg lg:max-w-2xl xl:max-w-xl 2xl:max-w-2xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 mb-8 text-center">
               Crea tu cuenta
             </h1>
