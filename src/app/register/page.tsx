@@ -1,5 +1,5 @@
 import Image from 'next/image'
-
+import Link from 'next/link'
 
 export default function RegisterPage() {
   return (
@@ -118,7 +118,7 @@ export default function RegisterPage() {
 
             {/* Nombre */}
             <label
-              className="block text-gray-800  font-semibold mb-1 md:text-xl lg:text-2xl lg:mb-4"
+              className="block text-gray-800  font-semibold mb-6 md:text-xl lg:text-2xl lg:mb-4"
               htmlFor="name"
             >
               Nombre
@@ -127,12 +127,12 @@ export default function RegisterPage() {
               id="name"
               type="text"
               placeholder="Ingresa tu nombre"
-              className="w-full z-99 border-b-2 border-blue-500 focus:outline-none focus:border-blue-500 placeholder-gray-400 mb-8 lg:mb-12 lg:text-2xl"
+              className="w-full z-99 border-b-2 border-[#2090f3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
             />
 
             {/* Correo */}
             <label
-              className="block text-gray-800 font-semibold mb-1 sm:text-xl lg:text-2xl lg:mb-4"
+              className="block text-gray-800 font-semibold mb-6 sm:text-xl lg:text-2xl lg:mb-4"
               htmlFor="email"
             >
               Correo electrónico
@@ -141,12 +141,12 @@ export default function RegisterPage() {
               id="email"
               type="email"
               placeholder="Ingresa tu correo electrónico"
-              className="w-full border-b-2 border-blue-500 focus:outline-none focus:border-blue-500 placeholder-gray-400 mb-8 lg:mb-12 lg:text-2xl"
+              className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
             />
 
             {/* Contraseña */}
             <label
-              className="block text-gray-800 font-semibold mb-1 sm:text-xl lg:text-2xl lg:b-4"
+              className="block text-gray-800 font-semibold mb-6 sm:text-xl lg:text-2xl lg:b-4"
               htmlFor="password"
             >
               Contraseña
@@ -155,19 +155,19 @@ export default function RegisterPage() {
               id="password"
               type="password"
               placeholder="Ingresa tu contraseña"
-              className="w-full border-b-2 border-blue-500 focus:outline-none focus:border-blue-500 placeholder-gray-400 mb-8 lg:mb-12 lg:text-2xl"
+              className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
             />
 
             {/* Checkbox */}
             <div className="flex items-start mb-8">
               <input
                 type="checkbox"
-                className="mt-1 lg:w-5 lg:h-5 accent-blue-500"
+                className="mt-1 lg:w-5 lg:h-5 accent-[#2090F3]"
                 id="terms"
               />
               <label htmlFor="terms" className="ml-2 text-sm lg:text-lg text-gray-600">
                 Al marcar aceptas nuestros{" "}
-                <span className="text-blue-500 font-medium">
+                <span className="text-[#2090F3] font-medium">
                   Términos y condiciones
                 </span>
               </label>
@@ -175,16 +175,22 @@ export default function RegisterPage() {
 
             {/* Botones */}
             <div className="flex space-x-4">
-              <button className="bg-blue-500 text-white font-semibold px-6 py-2 rounded-lg w-full lg:py-6 lg:text-xl">
+              {/* Botón con onClick */}
+              <button
+                className="bg-blue-500 text-white font-semibold px-6 py-2 rounded-lg w-full text-center lg:py-6 lg:text-2xl"
+              >
                 Crear cuenta
               </button>
-              <button className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-lg w-full cursor-not-allowed lg:py-6 lg:text-xl">
-                Iniciar sesión
-              </button>
+
+              <Link
+                href="/login"
+                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-lg w-full text-center lg:py-6 lg:text-2xl block"
+              >Ya soy miembro</Link>
             </div>
             <p className="flex justify-center mt-52 xl:hidden">Hecho con pasión y propósito</p>
           </div>
         </div>
       </div >
-    </>)
+    </>
+  )
 }
