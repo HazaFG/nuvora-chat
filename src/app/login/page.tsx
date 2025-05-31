@@ -111,7 +111,7 @@ export default function LoginPage() {
 
         {/* Sección derecha: contenedor del Formulario */}
         <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">
-          <div className="z-99 w-full md:max-w-lg lg:max-w-2xl xl:max-w-xl 2xl:max-w-4xl ">
+          <div className="z-99 w-full md:max-w-lg lg:max-w-2xl xl:max-w-[40vw] 2xl:max-w-2xl ">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 mb-8 text-center">Inicia sesión</h1>
 
             {/* Correo */}
@@ -161,14 +161,14 @@ export default function LoginPage() {
             <div className="flex space-x-4">
               <Link
                 href="/register"
-                className="bg-blue-500 text-white font-semibold px-6 py-2 rounded-lg w-full text-center lg:py-6 lg:text-2xl block"
+                className="bg-[#1694FA] text-white font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl block"
               >
                 ¿Sin cuenta? Créala ya
               </Link>
 
               {/* Botón con onClick */}
               <button
-                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-lg w-full text-center lg:py-6 lg:text-2xl"
+                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl"
               >
                 Iniciar sesión
               </button>

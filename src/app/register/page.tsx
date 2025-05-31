@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function RegisterPage() {
   return (
     <>
-      <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] flex flex-col xl:flex-row">
+      <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] xl:overflow-hidden flex flex-col xl:flex-row">
         {/* Contenedor del Gradiente - Sección Izquierda */}
         <div className="flex-1 bg-gradient-to-b from-[#0C4A9D] to-[#47A6F9] text-white flex items-center p-8 flex-col h-screen lg:h-auto relative">
 
@@ -42,7 +42,7 @@ export default function RegisterPage() {
             <p className='hidden xl:block mt-80 text-xl'>Hecho con pasión y propósito.</p>
 
             {/* --- INICIO de la animación de flecha con Tailwind --- */}
-            <div className="mt-24 md:mt-32 lg:mt-46 xl:hidden flex justify-center items-center">
+            <div className="mt-10 md:mt-32 lg:mt-46 xl:hidden flex justify-center items-center">
               <svg className="w-20 h-20 text-white animate-bounce motion-reduce:animate-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
               </svg>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
 
         {/* Sección derecha: contenedor del Formulario */}
         <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">
-          <div className="z-99 w-full md:max-w-lg lg:max-w-2xl xl:max-w-xl 2xl:max-w-4xl ">
+          <div className="z-99 w-full md:max-w-lg lg:max-w-2xl xl:max-w-[40vw] 2xl:max-w-2xl ">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 mb-8 text-center">
               Crea tu cuenta
             </h1>
@@ -177,14 +177,14 @@ export default function RegisterPage() {
             <div className="flex space-x-4">
               {/* Botón con onClick */}
               <button
-                className="bg-blue-500 text-white font-semibold px-6 py-2 rounded-lg w-full text-center lg:py-6 lg:text-2xl"
+                className="bg-[#1694FA] text-white font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl"
               >
                 Crear cuenta
               </button>
 
               <Link
                 href="/login"
-                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-lg w-full text-center lg:py-6 lg:text-2xl block"
+                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl block"
               >Ya soy miembro</Link>
             </div>
             <p className="flex justify-center mt-52 xl:hidden">Hecho con pasión y propósito</p>
