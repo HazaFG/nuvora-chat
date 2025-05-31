@@ -98,11 +98,6 @@ export default function LoginPage() {
 
         </div> {/* FIN del Contenedor del Gradiente */}
 
-
-
-
-
-
         {/*Aqui va la imagen de la nube feik */}
         <div className="hidden xl:flex h-screen justify-start z-3">
           <Image
@@ -113,11 +108,6 @@ export default function LoginPage() {
             sizes="(max-height: 100vh) 33vw, 33vh"
           />
         </div>
-
-
-
-
-
 
         {/* Sección derecha: contenedor del Formulario */}
         <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">

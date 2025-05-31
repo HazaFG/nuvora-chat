@@ -101,7 +101,7 @@ export default function RegisterPage() {
         {/*Aqui va la imagen de la nube feik */}
         <div className="hidden xl:flex h-screen justify-start z-3">
           <Image
-            src="/testing.png"
+            src="/testing.svg"
             alt="Imagen test"
             fill
             className="object-contain -ml-14"
