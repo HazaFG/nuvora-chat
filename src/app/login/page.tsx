@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function LoginPage() {
   return (
     <>
-      <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] flex flex-col xl:flex-row">
+      <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] xl:overflow-hidden flex flex-col xl:flex-row">
         {/* Contenedor del Gradiente - Sección Izquierda */}
         <div className="flex-1 bg-gradient-to-b from-[#0C4A9D] to-[#47A6F9] text-white flex items-center p-8 flex-col h-screen lg:h-auto relative">
 
@@ -98,16 +98,26 @@ export default function LoginPage() {
 
         </div> {/* FIN del Contenedor del Gradiente */}
 
+
+
+
+
+
         {/*Aqui va la imagen de la nube feik */}
         <div className="hidden xl:flex h-screen justify-start z-3">
           <Image
-            src="/testing.png"
+            src="/testing.svg"
             alt="Imagen test"
             fill
             className="object-contain -ml-14"
             sizes="(max-height: 100vh) 33vw, 33vh"
           />
         </div>
+
+
+
+
+
 
         {/* Sección derecha: contenedor del Formulario */}
         <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">
