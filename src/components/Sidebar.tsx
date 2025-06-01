@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import Image from "next/image"
-import { IoChatboxEllipsesOutline, IoPersonCircleOutline, IoAddCircleOutline, IoTrashOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5"; // Importa los iconos de sol y luna
+import { IoChatboxEllipsesOutline, IoPersonCircleOutline, IoAddCircleOutline, IoTrashOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { SidebarMenuItem } from "./SidebarMenuItem";
 import { SidebarSessionItem } from "./SidebarSessionItem";
 import { useTheme } from '../hooks/useTheme';
@@ -14,7 +14,7 @@ const menuItems = [
     name: 'Sala general'
   },
   {
-    path: '/profile/punga',
+    path: '/dashboard/nosequeponeraqui',
     icon: <IoAddCircleOutline size={22} />,
     name: 'Crear sala'
   }
@@ -23,7 +23,7 @@ const menuItems = [
 const sessionItems = [
   {
     path: '/dashboard/profile',
-    icon: <IoPersonCircleOutline size={24} />,
+    icon: <IoPersonCircleOutline size={22} />,
     name: 'Perfil'
   },
   {
