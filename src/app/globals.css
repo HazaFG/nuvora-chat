@@ -21,6 +21,7 @@
   --font-madimi-one: 'Madimi One', sans-serif;
   --foreground: #171717;
   --background: #fff;
+  --chat-background: #e3e3e3; 
 }
 
 body {
@@ -31,7 +32,8 @@ body {
 
 html.dark {
   --background: #1e1e1e;
-  --foreground: #fff;
+  --foreground: #ffffff;
+  --chat-background: #2a2a2a; /* Un poco más claro que el fondo oscuro */
 }
 
 html.dark body {
@@ -50,3 +52,102 @@ html.dark body {
     margin-top: 20rem;
   }
 }
+
+/*Estilos de el chat para el modo oscuro porque no jalo con tailwind xd*/
+
+.chat-container {
+  height: 95vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--chat-background); /* Aquí el nuevo color */
+  color: var(--foreground);
+  border-radius: 1rem; /* más redondeado */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* para levantarlo visualmente */
+  padding: 1rem;
+}
+
+.chat-header {
+  padding: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-bottom: 1px solid #ccc;
+}
+
+html.dark .chat-header {
+  border-color: #444;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chat-message {
+  max-width: 16rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  word-break: break-word;
+}
+
+.chat-message-user {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: white;
+}
+
+.chat-message-bot {
+  align-self: flex-start;
+  background-color: #e0e0e0;
+  color: black;
+}
+
+html.dark .chat-message-bot {
+  background-color: #444;
+  color: white;
+}
+
+.chat-input {
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+html.dark .chat-input {
+  border-color: #444;
+}
+
+.chat-text-input {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: #f2f2f2;
+  color: black;
+  border: none;
+  outline: none;
+}
+
+html.dark .chat-text-input {
+  background-color: #2d2d2d;
+  color: white;
+}
+
+.chat-send-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.chat-send-button:hover {
+  background-color: #0056b3;
+}
+
