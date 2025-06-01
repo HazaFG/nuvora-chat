@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Perfil",
+  title: "Nuvora Chat",
   description: "Este es el perfil del usuario",
 };
 
@@ -29,7 +29,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Sidebar />
-
         {children}
       </body>
     </html>
