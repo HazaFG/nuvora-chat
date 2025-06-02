@@ -57,7 +57,13 @@ export const Sidebar = () => {
         aria-label="Sidebar"
       >
         {/*Este es el container perro*/}
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-[#181818]">
+        <div
+          className="h-full px-3 py-4 overflow-y-auto"
+          style={{
+            backgroundColor: 'var(--sidebar-background)',
+            color: 'var(--sidebar-text)',
+          }}
+        >
           {/*Esta cosa es la parte donde esta todo el texto de flowbite*/}
           <div className="flex items-center ps-2.5 mb-5">
             <button
@@ -72,10 +78,10 @@ export const Sidebar = () => {
             </button>
 
             <Image src="/cloudWhite.png" width={40} height={20} className="me-3" alt="Flowbite Logo" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap font-madimi dark:text-white">Nuvora chat</span>
+            <span className="self-center text-2xl font-semibold whitespace-nowrap font-madimi" style={{ color: 'var(--sidebar-text)' }}>Nuvora chat</span>
           </div>
 
-          <div className="mt-8 text-gray-900 dark:text-white"> {/* Agrega text-gray-900 para modo claro */}
+          <div className="mt-8" style={{ color: 'var(--sidebar-text)' }}>
             <h1>Conversaciones</h1>
           </div>
 
@@ -94,22 +100,25 @@ export const Sidebar = () => {
           </div>
 
           {/*cambio de tema pedorro */}
-          <button
-            onClick={toggleTheme}
-            className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group w-full"
-          >
-            {theme === 'dark' ? (
-              <IoSunnyOutline size={22} className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-            ) : (
-              <IoMoonOutline size={22} className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-            )}
-            <span className="ml-3 whitespace-nowrap">
-              {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
-            </span>
-          </button>
+<button
+  onClick={toggleTheme}
+  // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
+  className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
+>
+  {theme === 'dark' ? (
+    // Usa la clase 'menu-icon' para que herede los estilos de color de icono
+    <IoSunnyOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
+  ) : (
+    // Usa la clase 'menu-icon' para que herede los estilos de color de icono
+    <IoMoonOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
+  )}
+  <span className="ml-3 whitespace-nowrap">
+    {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+  </span>
+</button>
 
 
-          <div className="mt-8 text-gray-900 dark:text-white">
+          <div className="mt-8 text-gray-900 dark:text-white" style={{ color: 'var(--sidebar-text)' }}>
             <h1>Datos personales</h1>
           </div>
 

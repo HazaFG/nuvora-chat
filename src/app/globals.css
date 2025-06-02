@@ -20,8 +20,16 @@
 :root {
   --font-madimi-one: 'Madimi One', sans-serif;
   --foreground: #171717;
-  --background: #fff;
-  --chat-background: #e3e3e3; 
+  --background: #f3f4f6;
+  --chat-background: #ffffff;
+  --sidebar-background: #fff;
+  /* modo claro: gris muy claro */
+  --sidebar-text: #4c4c4c;
+  --sidebar-icon: #4c4c4c;
+  --sidebar-icon-hover: #171717;
+
+  --sidebar-box: #f3f4f6;
+  --sidebar-hover-bg: #f3f4f6;
 }
 
 body {
@@ -33,11 +41,29 @@ body {
 html.dark {
   --background: #1e1e1e;
   --foreground: #ffffff;
-  --chat-background: #2a2a2a; /* Un poco más claro que el fondo oscuro */
+  --chat-background: #171717;
+  --sidebar-background: #171717;
+  --sidebar-text: #ffffff;
+  --sidebar-box: #171717;
+  --sidebar-hover-bg: #2d2d2d;
+  --sidebar-icon: white;
+  --sidebar-icon-hover: white;
 }
 
 html.dark body {
   color: var(--foreground);
+}
+
+.sidebar-menu-item-link:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.menu-icon {
+  color: var(--sidebar-icon);
+}
+
+.group:hover .menu-icon {
+  color: var(--sidebar-icon-hover);
 }
 
 @theme inline {
@@ -60,10 +86,13 @@ html.dark body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--chat-background); /* Aquí el nuevo color */
+  background-color: var(--chat-background);
+  /* Aquí el nuevo color */
   color: var(--foreground);
-  border-radius: 1rem; /* más redondeado */
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); /* para levantarlo visualmente */
+  border-radius: 1rem;
+  /* más redondeado */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  /* para levantarlo visualmente */
   padding: 1rem;
 }
 
@@ -75,7 +104,8 @@ html.dark body {
 }
 
 html.dark .chat-header {
-  border-color: #444;
+  border-color: rgba(23, 23, 23, 0.1);
+
 }
 
 .chat-messages {
@@ -150,4 +180,3 @@ html.dark .chat-text-input {
 .chat-send-button:hover {
   background-color: #0056b3;
 }
-
