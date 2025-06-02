@@ -17,7 +17,7 @@ export const SidebarMenuItem = ({ path, icon, name }: props) => {
         <Link
           href={path}
           className={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link ${actualPath === path ? "sidebar-active-link" : ""}`}
-          style={actualPath === path ? { backgroundColor: 'var(--sidebar-box)' } : {}}
+          style={actualPath === path ? { backgroundColor: 'var(--sidebar-seleccion)' } : {}}
         >
           <div className="w-5 h-5 transition duration-75 menu-icon">
             {icon}

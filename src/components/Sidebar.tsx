@@ -100,23 +100,23 @@ export const Sidebar = () => {
           </div>
 
           {/*cambio de tema pedorro */}
-<button
-  onClick={toggleTheme}
-  // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
-  className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
->
-  {theme === 'dark' ? (
-    // Usa la clase 'menu-icon' para que herede los estilos de color de icono
-    <IoSunnyOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
-  ) : (
-    // Usa la clase 'menu-icon' para que herede los estilos de color de icono
-    <IoMoonOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
-  )}
-  <span className="ml-3 whitespace-nowrap">
-    {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
-  </span>
-</button>
-
+          <button
+            onClick={toggleTheme}
+            // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
+            className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
+            style={{ color: 'var(--sidebar-text)' }}
+          >
+            {theme === 'dark' ? (
+              // Usa la clase 'menu-icon' para que herede los estilos de color de icono
+              <IoSunnyOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
+            ) : (
+              // Usa la clase 'menu-icon' para que herede los estilos de color de icono
+              <IoMoonOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
+            )}
+            <span className="ml-3 whitespace-nowrap">
+              {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+            </span>
+          </button>
 
           <div className="mt-8 text-gray-900 dark:text-white" style={{ color: 'var(--sidebar-text)' }}>
             <h1>Datos personales</h1>
@@ -135,7 +135,7 @@ export const Sidebar = () => {
             }
           </div>
         </div>
-      </aside>
+      </aside >
     </>
   )
 }
