@@ -4,10 +4,15 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   const pathname = request.nextUrl.pathname;
+
+  // Define tus rutas protegidas
   const protectedRoutes = ['/dashboard'];
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
+
+  //Gracias gemini por esta linea
+  console.log(`[Middleware] Path: ${pathname}, Token: ${token ? 'Presente' : 'Ausente'}, Protected: ${isProtectedRoute}`);
 
   if (!token && isProtectedRoute) {
     if (!pathname.startsWith('/login') && !pathname.startsWith('/api/auth')) {
@@ -18,15 +23,19 @@ export async function middleware(request: NextRequest) {
   }
 
   if (token && (pathname.startsWith('/login') || pathname.startsWith('/register'))) {
+    console.log(`[Middleware] Redirigiendo a /dashboard/main desde ${pathname} (ya logueado)`);
     return NextResponse.redirect(new URL('/dashboard/main', request.url));
   }
 
+  // Si ninguna de las condiciones anteriores se cumple, permite que la solicitud continúe
   return NextResponse.next();
 }
 
 // Configuración del 'matcher' para el middleware
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|api/auth).*)',
+    '/dashboard/:path*',
+    '/login',
+    '/register'
   ],
 };
