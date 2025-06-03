@@ -93,7 +93,7 @@ export default function ChatTemplate(): JSX.Element {
     if (trimmed !== '') {
       // **Emite el mensaje al backend via Socket.IO**
       if (socketRef.current) {
-        socketRef.current.emit('chat message', trimmed);
+        socketRef.current.emit('send message', trimmed);
       }
 
       // ¡¡¡IMPORTANTE!!!

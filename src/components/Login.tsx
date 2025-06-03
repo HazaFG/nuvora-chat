@@ -1,9 +1,73 @@
-'use client'
+'use client';
 
-import Link from "next/link"
-import Image from "next/image"
+import React, { useState } from 'react';
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
+const BACKEND_LOGIN_URL = `${BACKEND_API_BASE_URL}/api/auth/login`;
 
 export const Login = () => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validación básica del lado del cliente
+    if (!email || !password) {
+      setError('Por favor, ingresa tu correo electrónico y contraseña.');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch(BACKEND_LOGIN_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Manejo de errores específicos del backend (ej. credenciales inválidas)
+        setError(data.message || 'Error al iniciar sesión. Inténtalo de nuevo.');
+        return;
+      }
+
+      // por si el login jala bien
+      if (data.token) {
+        Cookies.set('token', data.token, { expires: 7, path: '/' }); //token por 7 días
+        setSuccess('¡Inicio de sesión exitoso! Redirigiendo al dashboard...');
+
+        //si todo sale bien va pal dashboard
+        setTimeout(() => {
+          router.push('/dashboard/main');
+        }, 1500);
+      } else {
+        setError('Inicio de sesión exitoso, pero no se recibió el token de autenticación jaja tonto');
+      }
+
+    } catch (err) {
+      console.error('Error al conectar con el servidor:', err);
+      setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] xl:overflow-hidden flex flex-col xl:flex-row">
       {/* Contenedor del Gradiente - Sección Izquierda */}
@@ -14,7 +78,7 @@ export const Login = () => {
 
           <h1 className="text-3xl mt-14 font-inter md:hidden lg:hidden">Bienvenido a</h1>
           <div className="relative
-          w-24 h-24        /* Default (xs) - up to 639px */
+          w-24 h-24     /* Default (xs) - up to 639px */
           sm:w-32 sm:h-32 /* sm - 640px and up */
           md:w-48 md:h-48 /* md - 768px and up */
           lg:w-60 lg:h-60 /* lg - 1024px and up */
@@ -111,73 +175,91 @@ export const Login = () => {
       </div>
 
       {/* Sección derecha: contenedor del Formulario */}
-      <div className="lg:flex-1 lg:bg-white flex flex-col items-center justify-center p-8 w-full">
+      <div className="lg:flex-1 lg:bg-white bg-white flex flex-col items-center justify-center p-8 w-full">
         <div className="z-99 w-full md:max-w-lg lg:max-w-2xl xl:max-w-[40vw] 2xl:max-w-2xl ">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-700 mb-8 text-center">Inicia sesión</h1>
 
-          {/* Correo */}
-          <label
-            className="block text-gray-800 font-semibold mb-6 sm:text-xl lg:text-2xl lg:mb-4"
-            htmlFor="email"
-          >
-            Correo electrónico
-          </label>
-          <input
-            id="email"
-            type="email"
-            placeholder="Ingresa tu correo electrónico"
-            className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
-          />
+          {/* Mensajes de error/éxito */}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+              <span className="block sm:inline">{success}</span>
+            </div>
+          )}
 
-          {/* Contraseña */}
-          <label
-            className="block text-gray-800 font-semibold mb-6 sm:text-xl lg:text-2xl lg:b-4"
-            htmlFor="password"
-          >
-            Contraseña
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Ingresa tu contraseña"
-            className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
-          />
-
-          {/* Checkbox */}
-          <div className="flex items-start mb-8">
-            <input
-              type="checkbox"
-              className="mt-1 lg:w-5 lg:h-5 accent-[#2090F3]"
-              id="terms"
-            />
-            <label htmlFor="terms" className="ml-2 text-sm lg:text-lg text-gray-600">
-              Al marcar aceptas nuestros{" "}
-              <span className="text-[#2090F3] font-medium">
-                Términos y condiciones
-              </span>
+          {/* FORMULARIO */}
+          <form onSubmit={handleSubmit}>
+            {/* Correo */}
+            <label
+              className="block text-gray-800 font-semibold mb-6 sm:text-xl lg:text-2xl lg:mb-4"
+              htmlFor="email"
+            >
+              Correo electrónico
             </label>
-          </div>
+            <input
+              id="email"
+              type="email"
+              placeholder="Ingresa tu correo electrónico"
+              value={email} // Conectado al estado
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
+            />
 
-          {/* Botones */}
-          <div className="flex space-x-4">
-            <Link
-              href="/register"
-              className="bg-[#1694FA] text-white font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl block"
+            {/* Contraseña */}
+            <label
+              className="block text-gray-800 font-semibold mb-6 sm:text-xl lg:text-2xl lg:b-4"
+              htmlFor="password"
             >
-              ¿Sin cuenta? Créala ya
-            </Link>
+              Contraseña
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Ingresa tu contraseña"
+              value={password} // Conectado al estado
+              onChange={(e) => setPassword(e.target.value)} // Actualiza el estado
+              required // Hace el campo requerido
+              className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
+            />
 
-            {/* Botón con onClick */}
-            <button
-              className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl"
-            >
-              Iniciar sesión
-            </button>
-            <p className="flex justify-center mt-52 xl:hidden">Hecho con pasión y propósito</p>
-          </div>
+            <div className="flex items-start mb-8">
+              <input
+                type="checkbox"
+                className="mt-1 lg:w-5 lg:h-5 accent-[#2090F3]"
+                id="rememberMe"
+              />
+              <label htmlFor="rememberMe" className="ml-2 text-sm lg:text-lg text-gray-600">
+                Recordarme
+              </label>
+            </div>
+
+            {/* Botones */}
+            <div className="flex space-x-4 flex-col">
+              <Link
+                href="/register"
+                className="bg-[#1694FA] text-white font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl block"
+              >
+                ¿Sin cuenta? Créala ya
+              </Link>
+
+              {/* Botón de Iniciar Sesión */}
+              <button
+                type="submit" // Importante: make it type="submit" for form submission
+                disabled={loading}
+                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+              </button>
+              <p className="flex justify-center mt-52 xl:hidden sm:hidden">Hecho con pasión y propósito</p>
+            </div>
+          </form> {/* CIERRE DEL FORMULARIO */}
         </div>
       </div >
     </div>
-  )
-}
-
+  );
+};

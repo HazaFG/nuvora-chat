@@ -11,13 +11,19 @@ const menuItems = [
   {
     path: '/dashboard/main',
     icon: <IoChatboxEllipsesOutline size={22} />,
-    name: 'Sala general'
+    name: 'Conversaciones'
   },
   {
     path: '/dashboard/nosequeponeraqui',
     icon: <IoAddCircleOutline size={22} />,
     name: 'Crear sala'
+  },
+  {
+    path: '/dashboard/unirsesalg',
+    icon: <IoAddCircleOutline size={22} />,
+    name: 'Unirse sala'
   }
+
 ]
 
 const sessionItems = [
