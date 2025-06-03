@@ -42,7 +42,6 @@ export const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        // Manejo de errores específicos del backend (ej. credenciales inválidas)
         setError(data.message || 'Error al iniciar sesión. Inténtalo de nuevo.');
         return;
       }
