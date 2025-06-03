@@ -28,9 +28,9 @@ const menuItems = [
 
 const sessionItems = [
   {
-    path: '/dashboard/profile',
+    path: '/dashboard/users',
     icon: <IoPersonCircleOutline size={22} />,
-    name: 'Perfil'
+    name: 'Usuario'
   },
   {
     path: '/dashboard/cerrar',
