@@ -5,6 +5,12 @@ import { IoChatboxEllipsesOutline, IoPersonCircleOutline, IoAddCircleOutline, Io
 import { SidebarMenuItem } from "./SidebarMenuItem";
 import { SidebarSessionItem } from "./SidebarSessionItem";
 import { useTheme } from '../hooks/useTheme';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
+const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
+
 
 //Aqui vamos a traernos en forma de arreglo todo nuestos elementos de SideBarMenuItem
 const menuItems = [
@@ -32,16 +38,66 @@ const sessionItems = [
     icon: <IoPersonCircleOutline size={22} />,
     name: 'Usuario'
   },
-  {
-    path: '/dashboard/cerrar',
-    icon: <IoTrashOutline size={22} />,
-    name: 'Cerrar Sesion'
-  }
 ]
+
+interface LogoutResponse {
+  message: string;
+}
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [theme, toggleTheme] = useTheme();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleCerrarSesion = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    const token = Cookies.get('token');
+
+    if (!token) {
+      setError('No hay sesión activa para cerrar.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(BACKEND_LOGOUT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const data: LogoutResponse = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Error al cerrar sesión');
+        return;
+      }
+
+      Cookies.remove('token');
+      setSuccess(data.message || 'Sesión cerrada exitosamente.');
+      console.log('Sesión cerrada exitosamente:', data.message);
+
+      setTimeout(() => {
+        router.push('/login');
+      }, 1500);
+
+    } catch (err: any) {
+      console.error('Error al conectar con el servidor:', err);
+      setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando.');
+    } finally {
+      setLoading(false);
+    }
+    return { handleCerrarSesion, loading, error, success };
+  }
+
 
   return (
     <>
@@ -140,6 +196,21 @@ export const Sidebar = () => {
               ))
             }
           </div>
+
+          <button
+            onClick={handleCerrarSesion}
+            // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
+            className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
+            style={{ color: 'var(--sidebar-text)' }}
+          >
+            {(
+              <IoTrashOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
+            )}
+            <span className="ml-3 whitespace-nowrap">Cerrar sesión</span>
+          </button>
+
+
+
         </div>
       </aside >
     </>
