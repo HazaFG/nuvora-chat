@@ -13,7 +13,7 @@ interface Message {
   fromUser: boolean; // Para diferenciar si es un mensaje enviado por este cliente o recibido
   media: string;
   mimeType: string;
-  timestamp: string;
+  timestamp?: string;
 }
 
 export default function ChatTemplate(): JSX.Element {
@@ -135,11 +135,17 @@ export default function ChatTemplate(): JSX.Element {
 
   const formatTime = (timestamp: string | undefined): string => {
     if (!timestamp) return '';
-    const date = new Date(timestamp);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    const utcTimestampString = timestamp.endsWith('Z') ? timestamp : `${timestamp}Z`;
+    
+    const date = new Date(utcTimestampString); //ahora si lo interpreta como UTC
+    
+    const hours = date.getHours().toString().padStart(2, '0'); 
+    const minutes = date.getMinutes().toString().padStart(2, '0'); 
+    
     return `${hours}:${minutes}`;
   };
+
 
   return (
     <div className="chat-container">
