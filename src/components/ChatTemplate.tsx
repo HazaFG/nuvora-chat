@@ -32,7 +32,7 @@ export default function ChatTemplate(): JSX.Element {
 
   // Datos de autenticación 
   // TOFIX: Guarda el nombre de usuario en una coookie para poder guardarlo aqui
-  const [username] = useState('andrea'); // esto aun es fake xd
+  const username = Cookies.get('name');
   const [token] = useState('123'); // dato para ser usado despues como id de user xd
 
   useEffect(() => {
@@ -70,7 +70,6 @@ export default function ChatTemplate(): JSX.Element {
     // Escucha el evento 'chat message' que viene del backend equis de
     newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
       const { msg, media, mime_type, user_id, name } = msg_wrapper
-      console.log('name:', name);
       // El 'fromUser: false' indica que es un mensaje recibido de otro lado
       setMessages((prev) => [
         ...prev,
