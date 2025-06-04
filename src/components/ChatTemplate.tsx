@@ -3,6 +3,7 @@
 import React, { JSX, useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import MediaDisplay from './MediaDisplay';
+import Cookies from 'js-cookie';
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
 
@@ -16,6 +17,7 @@ interface Message {
 
 export default function ChatTemplate(): JSX.Element {
   // Referencia para mantener la instancia del socket a través de renders
+  const userId = Cookies.get('userId');
   const socketRef = useRef<Socket | null>(null);
 
   // Estado para los mensajes, inicializamos vacío para que el backend los cargue
@@ -29,6 +31,7 @@ export default function ChatTemplate(): JSX.Element {
   const [errorConexion, setErrorConexion] = useState<string | null>(null);
 
   // Datos de autenticación 
+  // TOFIX: Guarda el nombre de usuario en una coookie para poder guardarlo aqui
   const [username] = useState('andrea'); // esto aun es fake xd
   const [token] = useState('123'); // dato para ser usado despues como id de user xd
 
@@ -66,11 +69,12 @@ export default function ChatTemplate(): JSX.Element {
 
     // Escucha el evento 'chat message' que viene del backend equis de
     newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
-      const { msg, media, mime_type } = msg_wrapper
+      const { msg, media, mime_type, user_id, name } = msg_wrapper
+      console.log('name:', name);
       // El 'fromUser: false' indica que es un mensaje recibido de otro lado
       setMessages((prev) => [
         ...prev,
-        { id: prev.length + 1, text: msg, fromUser: false, media: media, mime_type: mime_type },
+        { id: prev.length + 1, text: msg, fromUser: false, media: media, mime_type: mime_type, user_id: user_id, name: name },
       ]);
 
       // Actualiza el serverOffset en la autenticación del socket
@@ -101,14 +105,14 @@ export default function ChatTemplate(): JSX.Element {
       reader.onload = function() {
         const bytes = new Uint8Array(this.result);
         const mediaType = file.type.split('/')[0]
-        socketRef.current.emit('send message', { media: bytes, msg: input, mime_type: mediaType });
+        socketRef.current.emit('send message', { media: bytes, msg: input, mime_type: mediaType, name: username, user_id: userId });
       };
 
       if (socketRef.current) {
         if (file) {
           reader.readAsArrayBuffer(file);
         } else {
-          socketRef.current.emit('send message', { media: bytes, msg: trimmed, mime_type: mediaType });
+          socketRef.current.emit('send message', { media: bytes, msg: trimmed, mime_type: mediaType, name: username, user_id: userId });
         }
       }
 
@@ -141,7 +145,12 @@ export default function ChatTemplate(): JSX.Element {
               key={msg.id}
               className={`chat-message ${msg.fromUser ? 'chat-message-user' : 'chat-message-bot'}`}
             >
+              <span class="silent italic bold">
+                {msg.name}:
+              </span>
+
               <MediaDisplay media={msg.media} mimeType={msg.mime_type} />
+
               {msg.text}
             </div>
           ))
