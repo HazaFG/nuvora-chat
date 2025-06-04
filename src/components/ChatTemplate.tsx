@@ -99,7 +99,7 @@ export default function ChatTemplate(): JSX.Element {
 
   const handleSend = (): void => {
     const trimmed = input.trim();
-    if (trimmed !== '') {
+    if (trimmed !== '' || file) {
       // **Emite el mensaje al backend via Socket.IO**
       const reader = new FileReader();
       reader.onload = function() {
