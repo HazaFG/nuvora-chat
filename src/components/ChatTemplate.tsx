@@ -6,6 +6,7 @@ import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
+const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY; 
 
 interface Message {
   id: number;
@@ -16,6 +17,12 @@ interface Message {
   timestamp?: string;
 }
 
+interface Emoji {
+  character: string;
+  unicodeName: string;
+  group: string;
+}
+
 export default function ChatTemplate(): JSX.Element {
   // Referencia para mantener la instancia del socket a través de renders
   const userId = Cookies.get('userId');
@@ -24,7 +31,7 @@ export default function ChatTemplate(): JSX.Element {
   // Estado para los mensajes, inicializamos vacío para que el backend los cargue
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
-  const [file, setFile] = useState<File | null>('');
+  const [file, setFile] = useState<File | null>(null);
 
   // Referencia para hacer scroll automático al final de los mensajes
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -35,6 +42,14 @@ export default function ChatTemplate(): JSX.Element {
   // TOFIX: Guarda el nombre de usuario en una coookie para poder guardarlo aqui
   const username = Cookies.get('name');
   const [token] = useState('123'); // dato para ser usado despues como id de user xd
+
+  //estados para las fucniones de los emojis
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false); //selector
+  const [emojis, setEmojis] = useState<Emoji[]>([]); //almacena
+  const [groupedEmojis, setGroupedEmojis] = useState<{ [key: string]: Emoji[] }>({}); //agrupados por categorias
+  const [emojiError, setEmojiError] = useState<string | null>(null); //errores
+
+  const inputRef = useRef<HTMLInputElement | null>(null); //pos de selector
 
   useEffect(() => {
     if (!websocketUrl) {
@@ -106,26 +121,95 @@ export default function ChatTemplate(): JSX.Element {
     }
   }, [messages]);
 
+  //cargar emojis por catrgorias
+   const fetchEmojis = async () => {
+    if (!emojiApiKey) {
+      setEmojiError("No env");
+      return;
+    }
+
+    setEmojiError(null);
+  
+    try {
+      const response = await fetch(`https://emoji-api.com/emojis?access_key=${emojiApiKey}`);
+      
+      if (!response.ok) {
+        throw new Error(`Error al cargar emojis: ${response.statusText}`);
+      }
+
+      const data: Emoji[] = await response.json();
+      setEmojis(data);
+
+      //agruparlos por su propiedad 'group'
+      const grouped: { [key: string]: Emoji[] } = data.reduce((acc, emoji) => {
+        
+        const groupName = emoji.group || 'Sin Categoría'; 
+        if (!acc[groupName]) {
+          acc[groupName] = [];
+        }
+        acc[groupName].push(emoji);
+        return acc;
+      }, {} as { [key: string]: Emoji[] }); // Casteo inicial para TypeScript
+      
+      setGroupedEmojis(grouped);
+
+    } catch (e: any) {
+      console.error("Error fetching emojis:", e);
+      setEmojiError(e.message || "No se pudieron cargar los emojis.");
+    }
+  };
+
+  //manejador btn emoji
+  const handleEmojiPicker = () => {
+    setShowEmojiPicker(prev => !prev);
+    //picker
+    if (!showEmojiPicker && Object.keys(groupedEmojis).length === 0) {
+      fetchEmojis();
+    }
+  };
+
+  //manejador select emoji
+  const handleSelectEmoji = (emojiCharacter: string) => {
+    setInput(prev => prev + emojiCharacter); //a;ade emoji al input
+    setShowEmojiPicker(false); //oculta selector
+    inputRef.current?.focus(); //vuelve a enfocar el input
+  };
+
   const handleSend = (): void => {
     const trimmed = input.trim();
     // **Emite el mensaje al backend via Socket.IO**
     const reader = new FileReader();
+
     reader.onload = function() {
-      const bytes = new Uint8Array(this.result);
+      const bytes = new Uint8Array(this.result as ArrayBuffer);
       const mediaType = file.type.split('/')[0]
-      socketRef.current.emit('send message', { media: bytes, msg: input, mime_type: mediaType, name: username, user_id: userId });
+
+      //quiza agregamdo un if aqui se quite el error //luego lo checoooo
+      socketRef.current.emit('send message', {
+          media: bytes, 
+          msg: input, 
+          mime_type: mediaType, 
+          name: username, 
+          user_id: userId });
     };
 
     if (socketRef.current) {
       if (file) {
         reader.readAsArrayBuffer(file);
       } else {
-        socketRef.current.emit('send message', { media: "", msg: trimmed, mime_type: "", name: username, user_id: userId });
+        socketRef.current.emit('send message', { 
+          media: "", 
+          msg: trimmed, 
+          mime_type: "", 
+          name: username, 
+          user_id: userId });
       }
     }
 
     setInput('');
+    //setFile(null);
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -192,15 +276,53 @@ export default function ChatTemplate(): JSX.Element {
           placeholder="Escribe tu mensaje..."
           className="chat-text-input"
           disabled={!!errorConexion} // Deshabilita el input si hay un error de conexión
+          ref={inputRef}
         />
         <button
           onClick={handleSend}
           className="chat-send-button"
-          disabled={!!errorConexion} // Deshabilita si hay error o input vacío
+          disabled={!!errorConexion || (input.trim() === '' && !file)} //deshabilita si hay error o input vacio
         >
           Enviar
         </button>
+
+        <button
+          onClick={handleEmojiPicker}
+          className="chat-emoji-button cursor-pointer"
+          disabled={!!errorConexion}
+        >
+          Emoji
+        </button>
       </div>
+      
+       {showEmojiPicker && (
+        <div className="absolute bottom-54 right-20 bg-white border border-gray-300 rounded-lg shadow-xl overflow-y-auto overflow-x-hidden max-h-[30vh] max-w-[70vh] z-20">
+          {emojiError && <div className="p-3 text-center text-red-500 bg-red-100 border-b border-red-200">{emojiError}</div>}
+          
+          {Object.keys(groupedEmojis).length > 0 ? (
+            Object.keys(groupedEmojis).map((groupName) => (
+              <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0">
+                <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize">{groupName.replace(/-/g, ' ')}</h3> {/* Formatear nombre de grupo */}
+                <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-1"> {/* Grilla responsiva */}
+                  {groupedEmojis[groupName]?.map((emoji) => (
+                    <span 
+                      key={emoji.unicodeName} 
+                      className="text-2xl sm:text-3xl lg:text-4xl text-center cursor-pointer select-none p-1 rounded-md hover:bg-gray-100 transition-colors duration-150"
+                      onClick={() => handleSelectEmoji(emoji.character)}
+                      title={emoji.unicodeName}
+                    >
+                      {emoji.character}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))
+          ) : (
+            !emojiError && <div className="p-3 text-center text-gray-500">Cargando emojis...</div>
+          )}
+        </div>
+      )}
+
       <div className='chat-input'>
         <input
           type="file"
