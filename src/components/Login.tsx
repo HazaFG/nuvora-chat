@@ -48,16 +48,26 @@ export const Login = () => {
 
       // por si el login jala bien
       if (data.token) {
-        Cookies.set('token', data.token, { expires: 7, path: '/' }); //token por 7 días
+        Cookies.set('token', data.token, { expires: 7, path: '/' });
         setSuccess('¡Inicio de sesión exitoso! Redirigiendo al dashboard...');
 
-        //si todo sale bien va pal dashboard
+        // // Guarda el ID del usuario de la respuesta del backend
+        if (data.user && data.user.id) { // Verifica que el objeto 'user' y su 'id' existan
+          Cookies.set('userId', data.user.id.toString(), { expires: 7, path: '/' });
+          console.log('User ID saved to cookie:', data.user.id);
+        } else {
+          console.warn('Backend login response did not include user.id. Sidebar link to profile might not work correctly.');
+        }
+
         setTimeout(() => {
           router.push('/dashboard/main');
         }, 1500);
       } else {
         setError('Inicio de sesión exitoso, pero no se recibió el token de autenticación jaja tonto');
       }
+
+
+
 
     } catch (err) {
       console.error('Error al conectar con el servidor:', err);

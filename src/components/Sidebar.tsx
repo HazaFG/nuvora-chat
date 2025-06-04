@@ -11,7 +11,6 @@ import Cookies from 'js-cookie';
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
 
-
 //Aqui vamos a traernos en forma de arreglo todo nuestos elementos de SideBarMenuItem
 const menuItems = [
   {
@@ -34,7 +33,7 @@ const menuItems = [
 
 const sessionItems = [
   {
-    path: '/dashboard/users',
+    path: `/dashboard/users/`,
     icon: <IoPersonCircleOutline size={22} />,
     name: 'Usuario'
   },
