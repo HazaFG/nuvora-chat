@@ -86,13 +86,15 @@ export default function ChatTemplate(): JSX.Element {
     // Escucha el evento 'chat message' que viene del backend equis de
     newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
       const { msg, media, mime_type, user_id, name, timestamp } = msg_wrapper
-      // El 'fromUser: false' indica que es un mensaje recibido de otro lado
+      
+      const currentUser = user_id === userId; 
+
       setMessages((prev) => [
         ...prev,
         {
           id: prev.length + 1,
           text: msg,
-          fromUser: false,
+          fromUser: currentUser,
           media: media,
           mime_type: mime_type,
           timestamp: timestamp,
@@ -111,7 +113,7 @@ export default function ChatTemplate(): JSX.Element {
     return () => {
       newSocket.disconnect();
     };
-  }, [username, token]); // Las dependencias aseguran que el efecto se re-ejecute si username/token cambian
+  }, [username, token, userId]); //agregue userId Las dependencias aseguran que el efecto se re-ejecute si username/token cambian
 
   // --- Lógica para Scroll Automático ---
   useEffect(() => {
