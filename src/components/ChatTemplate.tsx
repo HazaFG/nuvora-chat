@@ -13,6 +13,7 @@ interface Message {
   fromUser: boolean; // Para diferenciar si es un mensaje enviado por este cliente o recibido
   media: string;
   mimeType: string;
+  timestamp: string;
 }
 
 export default function ChatTemplate(): JSX.Element {
@@ -69,11 +70,18 @@ export default function ChatTemplate(): JSX.Element {
 
     // Escucha el evento 'chat message' que viene del backend equis de
     newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
-      const { msg, media, mime_type, user_id, name } = msg_wrapper
+      const { msg, media, mime_type, user_id, name, timestamp } = msg_wrapper
       // El 'fromUser: false' indica que es un mensaje recibido de otro lado
       setMessages((prev) => [
         ...prev,
-        { id: prev.length + 1, text: msg, fromUser: false, media: media, mime_type: mime_type, user_id: user_id, name: name },
+        { id: prev.length + 1,
+           text: msg, 
+           fromUser: false, 
+           media: media, 
+           mime_type: mime_type,
+           timestamp:timestamp, 
+           user_id: user_id, 
+           name: name },
       ]);
 
       // Actualiza el serverOffset en la autenticación del socket
@@ -125,6 +133,14 @@ export default function ChatTemplate(): JSX.Element {
     }
   };
 
+  const formatTime = (timestamp: string | undefined): string => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
   return (
     <div className="chat-container">
       <div className="chat-header">Sala General</div>
@@ -149,8 +165,12 @@ export default function ChatTemplate(): JSX.Element {
               </span>
 
               <MediaDisplay media={msg.media} mimeType={msg.mime_type} />
-
-              {msg.text}
+                {msg.text}
+                {msg.timestamp && (
+                  <span className="message-time">
+                    {formatTime(msg.timestamp)}
+                  </span>
+                )}
             </div>
           ))
         )}
