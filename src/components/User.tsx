@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
-const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000/';
 
 interface UserData {
   id: number
@@ -132,7 +131,8 @@ export const User = () => {
                 body: JSON.stringify(body)
               };
 
-              const response = await fetch(`${BACKEND_API_BASE_URL}api/users/update/${user.id}`, requestOptions)
+              //TODO actualizar cookie nombre de usuario, imagen que se pueda actualizar, con previsualizacion
+              const response = await fetch(`http://localhost:3000/api/users/update/${user.id}`, requestOptions)
               const json = await response.json()
               if (!response.ok) {
                 setFormError(json.message)
