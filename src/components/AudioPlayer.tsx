@@ -24,7 +24,7 @@ export default function AudioPlayer(props: any) {
 
   return (
     <div>
-      <audio ref={audioRef} controls className="hidden" onEnded={handleAudioEnded}>
+      <audio ref={audioRef} controls onEnded={handleAudioEnded}>
         <source src={`data:audio/mp3;base64,${props.src}`} type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>
