@@ -9,7 +9,7 @@ export function MediaComponent({ mimeType, media, text }: Props) {
   if (mimeType?.startsWith('image/') && media) {
     return (
       <div>
-        <img src={media} alt="media" className="max-w-full rounded-lg" />
+        <img src={media} alt="media" className="max-w-full rounded-lgl" />
         {text && <p>{text}</p>}
       </div>
     );
@@ -28,4 +28,3 @@ export function MediaComponent({ mimeType, media, text }: Props) {
 
   return <p>{text}</p>;
 }
-

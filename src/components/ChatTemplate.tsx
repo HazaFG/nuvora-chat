@@ -151,19 +151,6 @@ export default function ChatTemplate(): JSX.Element {
 
       <div className="chat-input">
         <input
-          type="file"
-          onChange={(e) => {
-            if (e.target.files) {
-              setFile(e.target.files[0])
-            }
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Escribe tu mensaje..."
-          className="chat-text-input"
-          disabled={!!errorConexion} // Deshabilita el input si hay un error de conexión
-        />
-
-        <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -180,6 +167,21 @@ export default function ChatTemplate(): JSX.Element {
           Enviar
         </button>
       </div>
+      <div className='chat-input'>
+        <input
+          type="file"
+          onChange={(e) => {
+            if (e.target.files) {
+              setFile(e.target.files[0])
+            }
+          }}
+          onKeyDown={handleKeyDown}
+          placeholder="Escribe tu mensaje..."
+          className="chat-text-input"
+          disabled={!!errorConexion} // Deshabilita el input si hay un error de conexión
+        />
+      </div>
+
     </div>
   );
 }
