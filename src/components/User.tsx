@@ -1,13 +1,16 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000/';
 
 interface UserData {
   id: number
   name: string
   email: string
   password: string
-  profile_picture: null
+  confirm_password: string
+  profile_picture: File | null
+
 }
 
 interface ApiResponse {
@@ -16,9 +19,10 @@ interface ApiResponse {
 }
 
 export const User = () => {
-  const [user, setUser] = useState<UserData | null>(null);
+  const [user, setUser] = useState<UserData | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
+  const [formError, setFormError] = useState<Error | null>(null)
 
   useEffect(() => {
     const userId = Cookies.get('userId');
@@ -50,6 +54,7 @@ export const User = () => {
     return <div className="text-center mt-16 text-red-500">Error al cargar el usuario: {error.message}</div>
   }
 
+
   if (!user) {
     return <div className="text-center mt-16">No se encontró información del usuario.</div>
   }
@@ -63,7 +68,7 @@ export const User = () => {
             <div className="w-full flex justify-center">
               <div className="relative group">
                 <img
-                  src="https://github.com/creativetimofficial/soft-ui-dashboard-tailwind/blob/main/build/assets/img/team-2.jpg?raw=true"
+                  src={user.profile_picture || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
                   className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px] object-cover w-[150px] h-[150px]"
                   alt="Profile"
                   id="profile-picture-display"
@@ -76,6 +81,11 @@ export const User = () => {
                   <input
                     id="profile-picture-upload"
                     type="file"
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        setUser({ ...user, profile_picture: e.target.files[0] })
+                      }
+                    }}
                     accept="image/*"
                     className="hidden"
                   />
@@ -97,7 +107,43 @@ export const User = () => {
             </div>
           </div>
 
-          <div className="mt-6 py-6 border-t border-slate-200 text-center">
+          {(formError) ? <span>{formError.message}</span> : ""}
+          <form onSubmit={async (e) => {
+            e.preventDefault()
+            if (user.password === user.confirm_password) {
+
+              const reader = new FileReader();
+              const body: any = user
+
+              reader.onload = function() {
+                const bytes = new Uint8Array(this.result);
+                body.profile_picture = bytes
+              };
+
+              if (user.profile_picture) {
+                reader.readAsArrayBuffer(user.profile_picture);
+              }
+
+              console.log(body);
+
+              const requestOptions = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              };
+
+              const response = await fetch(`${BACKEND_API_BASE_URL}api/users/update/${user.id}`, requestOptions)
+              const json = await response.json()
+              if (!response.ok) {
+                setFormError(json.message)
+                return
+              } else {
+                alert("se actualizo pero no actualizo la pagina para debuggear")
+              }
+            } else {
+              setFormError(new Error("Las Contraseñas NO Coinciden"))
+            }
+          }} className="mt-6 py-6 border-t border-slate-200 text-center">
             <div className="flex flex-wrap justify-center">
               <div className="w-full px-4">
                 <div className="font-light leading-relaxed text-slate-600 mb-4 space-y-4">
@@ -105,12 +151,14 @@ export const User = () => {
                   <input
                     type="text"
                     name="name"
+                    onChange={(e) => { setUser({ ...user, name: e.target.value }) }}
                     placeholder={user.name}
                     className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <input
                     type="email"
                     name="email"
+                    onChange={(e) => { setUser({ ...user, email: e.target.value }) }}
                     placeholder={user.email}
                     className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
@@ -119,30 +167,27 @@ export const User = () => {
                   <input
                     type="password"
                     name="password"
+                    onChange={(e) => { setUser({ ...user, password: e.target.value }) }}
                     placeholder='Contraseña'
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <input
                     type="password"
                     name="confirmPassword"
+                    onChange={(e) => { setUser({ ...user, confirm_password: e.target.value }) }}
                     placeholder="Confirmar contraseña"
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
-                  <p className='flex align-left text-user'>Ingresa tu contraseña para confirmar tus cambios</p>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Contraseña actual"
-                    className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
-                  />
+
                 </div>
 
                 <button
+                  type='submit'
                   className="barras-texto text-user mt-4 px-6 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors mr-2"
                 >Editar información</button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div >
