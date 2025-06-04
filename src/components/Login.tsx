@@ -54,6 +54,7 @@ export const Login = () => {
         // // Guarda el ID del usuario de la respuesta del backend
         if (data.user && data.user.id) { // Verifica que el objeto 'user' y su 'id' existan
           Cookies.set('userId', data.user.id.toString(), { expires: 7, path: '/' });
+          Cookies.set('name', data.user.name.toString(), { expires: 7, path: '/' });
           console.log('User ID saved to cookie:', data.user.id);
         } else {
           console.warn('Backend login response did not include user.id. Sidebar link to profile might not work correctly.');
