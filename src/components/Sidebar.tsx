@@ -30,10 +30,11 @@ const menuItems = [
   }
 
 ]
+const userId = Cookies.get('userId');
 
 const sessionItems = [
   {
-    path: `/dashboard/users/`,
+    path: `/dashboard/users/${userId}`,
     icon: <IoPersonCircleOutline size={22} />,
     name: 'Usuario'
   },
