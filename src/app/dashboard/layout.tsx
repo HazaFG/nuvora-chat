@@ -1,37 +1,22 @@
 import { Sidebar } from "@/components";
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Nuvora Chat",
-  description: "Este es el perfil del usuario",
+  title: "Dashboard",
+  description: "Sesion registrada",
 };
 
-export default function RootLayout({
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Sidebar />
+    <>
+      <Sidebar />
+      <main className="flex-1">
         {children}
-      </body>
-    </html>
+      </main>
+    </>
   );
 }
-

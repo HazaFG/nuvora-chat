@@ -250,7 +250,7 @@ export default function ChatTemplate(): JSX.Element {
               key={msg.id}
               className={`chat-message ${msg.fromUser ? 'chat-message-user' : 'chat-message-bot'}`}
             >
-              <span class="silent italic bold">
+              <span className="silent italic bold">
                 {msg.name}:
               </span>
 

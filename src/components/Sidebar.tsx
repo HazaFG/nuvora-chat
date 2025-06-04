@@ -189,7 +189,6 @@ export const Sidebar = () => {
               sessionItems.map(elementItem => (
                 <SidebarSessionItem
                   key={elementItem.path}
-                  path={elementItem.path}
                   icon={elementItem.icon}
                   name={elementItem.name}
                 />
