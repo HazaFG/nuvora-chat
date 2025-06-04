@@ -1,6 +1,8 @@
 'use client'
 
+
 import React, { useEffect, useState } from 'react'
+import Cookies from 'js-cookie';
 
 interface UserProps {
   userId: number;
@@ -24,9 +26,10 @@ export const User = () => {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
+    const userId = Cookies.get('userId');
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/users/1`)
+        const response = await fetch(`http://localhost:3000/api/users/${userId}`)
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
