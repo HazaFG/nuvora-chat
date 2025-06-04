@@ -23,6 +23,8 @@
   --background: #f3f4f6;
   --chat-background: #ffffff;
   --sidebar-background: #fff;
+  --barra-texto-user: #fff;
+
   /* modo claro: gris muy claro */
   --sidebar-text: #4c4c4c;
   --sidebar-icon: #4c4c4c;
@@ -31,7 +33,7 @@
   --sidebar-box: #f3f4f6;
   --sidebar-seleccion: #f3f4f6;
 
-  --sidebar-hover-bg: #f3f4f6;
+  --sidebar-hover-bg: #eaf0fd;
 }
 
 body {
@@ -46,6 +48,8 @@ html.dark {
   --chat-background: #171717;
   --sidebar-background: #171717;
   --sidebar-text: #ffffff;
+  --sidebar-hover-bg: #171717;
+  --barra-texto-user: #4c4c4c;
   --sidebar-box: #171717;
   --sidebar-hover-bg: #2d2d2d;
   --sidebar-icon: white;
@@ -84,6 +88,28 @@ html.dark body {
 }
 
 /*Estilos de el chat para el modo oscuro porque no jalo con tailwind xd*/
+
+.profile-container {
+  background-color: var(--chat-background);
+}
+
+.text-user {
+  color: var(--foreground);
+}
+
+.barras-texto {
+  background-color: var(--background);
+}
+
+.barras-texto::placeholder {
+  color: var(--foreground);
+  /* Un gris claro, puedes ajustarlo a tu gusto */
+}
+
+.barras-texto.text-user:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: var(--sidebar-icon-hover);
+}
 
 .chat-container {
   height: 95vh;
