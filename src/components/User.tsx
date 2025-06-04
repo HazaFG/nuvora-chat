@@ -6,6 +6,7 @@ interface UserData {
   id: number
   name: string
   email: string
+  password: string
   profile_picture: null
 }
 
@@ -60,11 +61,27 @@ export const User = () => {
         <div className="px-6">
           <div className="flex flex-wrap justify-center">
             <div className="w-full flex justify-center">
-              <div className="relative">
-                <img src="https://github.com/creativetimofficial/soft-ui-dashboard-tailwind/blob/main/build/assets/img/team-2.jpg?raw=true" className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px]" />
+              <div className="relative group">
+                <img
+                  src="https://github.com/creativetimofficial/soft-ui-dashboard-tailwind/blob/main/build/assets/img/team-2.jpg?raw=true"
+                  className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px] object-cover w-[150px] h-[150px]"
+                  alt="Profile"
+                  id="profile-picture-display"
+                />
+
+                <label
+                  className="absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px] w-[150px] h-[150px] rounded-full flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-70 transition-opacity duration-300 cursor-pointer"
+                >
+                  <span className="text-white text-sm">Cambiar Imagen</span>
+                  <input
+                    id="profile-picture-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                  />
+                </label>
               </div>
-            </div>
-            <div className="w-full text-center mt-20">
+            </div>            <div className="w-full text-center mt-20">
               <div className="flex justify-center lg:pt-4 pt-8 pb-0">
                 <div className="p-3 text-center">
                   <span className="text-xl font-bold block uppercase tracking-wide text-slate-700 text-user">{user?.id}</span>
@@ -84,29 +101,39 @@ export const User = () => {
             <div className="flex flex-wrap justify-center">
               <div className="w-full px-4">
                 <div className="font-light leading-relaxed text-slate-600 mb-4 space-y-4">
+                  <p className='flex align-left text-user'>Editar datos personales</p>
                   <input
                     type="text"
                     name="name"
-                    placeholder="Nombre"
-                    className="w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    placeholder={user.name}
+                    className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <input
                     type="email"
                     name="email"
-                    placeholder="Correo"
-                    className="w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    placeholder={user.email}
+                    className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
+                  <p className='flex align-left text-user'>Editar contraseña</p>
+
                   <input
                     type="password"
                     name="password"
-                    placeholder="Contraseña"
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    placeholder='Contraseña'
+                    className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <input
                     type="password"
                     name="confirmPassword"
                     placeholder="Confirmar contraseña"
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                  />
+                  <p className='flex align-left text-user'>Ingresa tu contraseña para confirmar tus cambios</p>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Contraseña actual"
+                    className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                 </div>
 

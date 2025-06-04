@@ -101,6 +101,11 @@ html.dark body {
   background-color: var(--background);
 }
 
+.barras-texto-color {
+  color: var(--foreground);
+}
+
+
 .barras-texto::placeholder {
   color: var(--foreground);
   /* Un gris claro, puedes ajustarlo a tu gusto */
