@@ -18,7 +18,7 @@ interface ApiResponse {
   user: UserData
 }
 
-export const User = ({ userId }: UserProps) => {
+export const User = () => {
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
@@ -26,7 +26,7 @@ export const User = ({ userId }: UserProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/users/${userId}`)
+        const response = await fetch(`http://localhost:3000/api/users/1`)
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
