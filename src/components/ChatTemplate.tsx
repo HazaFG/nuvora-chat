@@ -74,14 +74,16 @@ export default function ChatTemplate(): JSX.Element {
       // El 'fromUser: false' indica que es un mensaje recibido de otro lado
       setMessages((prev) => [
         ...prev,
-        { id: prev.length + 1,
-           text: msg, 
-           fromUser: false, 
-           media: media, 
-           mime_type: mime_type,
-           timestamp:timestamp, 
-           user_id: user_id, 
-           name: name },
+        {
+          id: prev.length + 1,
+          text: msg,
+          fromUser: false,
+          media: media,
+          mime_type: mime_type,
+          timestamp: timestamp,
+          user_id: user_id,
+          name: name
+        },
       ]);
 
       // Actualiza el serverOffset en la autenticación del socket
@@ -106,25 +108,23 @@ export default function ChatTemplate(): JSX.Element {
 
   const handleSend = (): void => {
     const trimmed = input.trim();
-    if (trimmed !== '' || file) {
-      // **Emite el mensaje al backend via Socket.IO**
-      const reader = new FileReader();
-      reader.onload = function() {
-        const bytes = new Uint8Array(this.result);
-        const mediaType = file.type.split('/')[0]
-        socketRef.current.emit('send message', { media: bytes, msg: input, mime_type: mediaType, name: username, user_id: userId });
-      };
+    // **Emite el mensaje al backend via Socket.IO**
+    const reader = new FileReader();
+    reader.onload = function() {
+      const bytes = new Uint8Array(this.result);
+      const mediaType = file.type.split('/')[0]
+      socketRef.current.emit('send message', { media: bytes, msg: input, mime_type: mediaType, name: username, user_id: userId });
+    };
 
-      if (socketRef.current) {
-        if (file) {
-          reader.readAsArrayBuffer(file);
-        } else {
-          socketRef.current.emit('send message', { media: bytes, msg: trimmed, mime_type: mediaType, name: username, user_id: userId });
-        }
+    if (socketRef.current) {
+      if (file) {
+        reader.readAsArrayBuffer(file);
+      } else {
+        socketRef.current.emit('send message', { media: "", msg: trimmed, mime_type: "", name: username, user_id: userId });
       }
-
-      setInput('');
     }
+
+    setInput('');
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
@@ -137,12 +137,12 @@ export default function ChatTemplate(): JSX.Element {
     if (!timestamp) return '';
 
     const utcTimestampString = timestamp.endsWith('Z') ? timestamp : `${timestamp}Z`;
-    
+
     const date = new Date(utcTimestampString); //ahora si lo interpreta como UTC
-    
-    const hours = date.getHours().toString().padStart(2, '0'); 
-    const minutes = date.getMinutes().toString().padStart(2, '0'); 
-    
+
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
     return `${hours}:${minutes}`;
   };
 
@@ -171,12 +171,12 @@ export default function ChatTemplate(): JSX.Element {
               </span>
 
               <MediaDisplay media={msg.media} mimeType={msg.mime_type} />
-                {msg.text}
-                {msg.timestamp && (
-                  <span className="message-time">
-                    {formatTime(msg.timestamp)}
-                  </span>
-                )}
+              {msg.text}
+              {msg.timestamp && (
+                <span className="message-time">
+                  {formatTime(msg.timestamp)}
+                </span>
+              )}
             </div>
           ))
         )}

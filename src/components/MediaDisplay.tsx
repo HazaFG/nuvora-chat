@@ -31,10 +31,13 @@ export default function MediaDisplay({ media, mimeType }: Props) {
         />
       )
       break;
-    default:
+    case "image":
       return (
         <Image src={`data:image/jpg;base64,${media}`} width={40} height={20} className="me-3" alt="Flowbite Logo" />
       )
+      break;
+    default:
+      return ""
       break;
   }
 }
