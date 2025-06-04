@@ -2,6 +2,7 @@ import Image from "next/image"
 import Audio from "next/Audio"
 import { useState } from "react";
 import AudioPlayer from "./AudioPlayer";
+import VideoPlayer from "./VideoPlayer";
 
 interface Props {
   media: string
@@ -14,7 +15,11 @@ export default function MediaDisplay({ media, mimeType }: Props) {
   switch (mimeType) {
     case "video":
       return (
-        <span>toodo!</span>
+        <VideoPlayer
+          src={media}
+          play={playSubmitSound}
+          onFinish={() => setPlaySubmitSound(false)}
+        />
       )
       break;
     case "audio":
