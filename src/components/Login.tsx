@@ -237,34 +237,24 @@ export const Login = () => {
               className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
             />
 
-            <div className="flex items-start mb-8">
-              <input
-                type="checkbox"
-                className="mt-1 lg:w-5 lg:h-5 accent-[#2090F3]"
-                id="rememberMe"
-              />
-              <label htmlFor="rememberMe" className="ml-2 text-sm lg:text-lg text-gray-600">
-                Recordarme
-              </label>
-            </div>
-
             {/* Botones */}
             <div className="flex space-x-4 flex-col">
-              <Link
-                href="/register"
-                className="bg-[#1694FA] text-white font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl block"
-              >
-                ¿Sin cuenta? Créala ya
-              </Link>
-
-              {/* Botón de Iniciar Sesión */}
               <button
                 type="submit" // Importante: make it type="submit" for form submission
                 disabled={loading}
-                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-[#1694FA] text-white font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
               </button>
+
+              <label htmlFor="terms" className="mt-6 ml-2 text-sm lg:text-lg text-gray-600">
+                ¿Aún no eres miembro?{" "}
+                <Link href={'/register'} className="text-[#2090F3] font-medium">
+                  Crea una cuenta
+                </Link>
+              </label>
+
+
               <p className="flex justify-center mt-52 xl:hidden sm:hidden">Hecho con pasión y propósito</p>
             </div>
           </form> {/* CIERRE DEL FORMULARIO */}
