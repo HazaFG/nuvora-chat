@@ -24,7 +24,7 @@ const menuItems = [
     name: 'Crear sala'
   },
   {
-    path: '/dashboard/unirsesalg',
+    path: '/dashboard/rooms',
     icon: <IoAddCircleOutline size={22} />,
     name: 'Unirse sala'
   }

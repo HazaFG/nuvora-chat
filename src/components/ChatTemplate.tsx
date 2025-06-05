@@ -6,7 +6,7 @@ import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
-const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY; 
+const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY;
 
 interface Message {
   id: number;
@@ -25,7 +25,7 @@ interface Emoji {
   group: string;
 }
 
-export default function ChatTemplate(): JSX.Element {
+export default function ChatTemplate({ roomId }: string): JSX.Element {
   // Referencia para mantener la instancia del socket a través de renders
   const socketRef = useRef<Socket | null>(null);
 
@@ -63,7 +63,7 @@ export default function ChatTemplate(): JSX.Element {
 
     if (userIdCookie && userNameCookie && userTokenCookie) {
       const parsedUserId = parseInt(userIdCookie, 10);
-      if (!isNaN(parsedUserId)) { 
+      if (!isNaN(parsedUserId)) {
         setCurrentUserData({
           id: parsedUserId,
           name: userNameCookie,
@@ -101,6 +101,7 @@ export default function ChatTemplate(): JSX.Element {
         token: token,
         username: username,
         userId: id,
+        room_id: roomId,
         serverOffset: 0,
       },
     });
@@ -151,7 +152,7 @@ export default function ChatTemplate(): JSX.Element {
     return () => {
       newSocket.disconnect();
     };
-  }, [loadingUserData, currentUserData]); 
+  }, [loadingUserData, currentUserData]);
 
   // --- Lógica para Scroll Automático ---
   useEffect(() => {
@@ -162,17 +163,17 @@ export default function ChatTemplate(): JSX.Element {
   }, [messages]);
 
   //cargar emojis por catrgorias
-   const fetchEmojis = async () => {
+  const fetchEmojis = async () => {
     if (!emojiApiKey) {
       setEmojiError("No env");
       return;
     }
 
     setEmojiError(null);
-  
+
     try {
       const response = await fetch(`https://emoji-api.com/emojis?access_key=${emojiApiKey}`);
-      
+
       if (!response.ok) {
         throw new Error(`Error al cargar emojis: ${response.statusText}`);
       }
@@ -182,15 +183,15 @@ export default function ChatTemplate(): JSX.Element {
 
       //agruparlos por su propiedad 'group'
       const grouped: { [key: string]: Emoji[] } = data.reduce((acc, emoji) => {
-        
-        const groupName = emoji.group || 'Sin Categoría'; 
+
+        const groupName = emoji.group || 'Sin Categoría';
         if (!acc[groupName]) {
           acc[groupName] = [];
         }
         acc[groupName].push(emoji);
         return acc;
       }, {} as { [key: string]: Emoji[] }); // Casteo inicial para TypeScript
-      
+
       setGroupedEmojis(grouped);
 
     } catch (e: any) {
@@ -217,7 +218,7 @@ export default function ChatTemplate(): JSX.Element {
 
   const handleSend = (): void => {
     const trimmed = input.trim();
-    
+
     //asegurarse de que el socket está conectado y tenemos los datos del usuario
     if (!socketRef.current || !currentUserData || loadingUserData) {
       console.warn("No se puede enviar el mensaje: Socket no conectado, usuario no autenticado o cargando.");
@@ -231,8 +232,8 @@ export default function ChatTemplate(): JSX.Element {
         media: mediaData,
         msg: trimmed,
         mime_type: mimeType,
-        name: name, 
-        user_id: id 
+        name: name,
+        user_id: id
       });
     };
 
@@ -336,19 +337,19 @@ export default function ChatTemplate(): JSX.Element {
           Emoji
         </button>
       </div>
-      
-       {showEmojiPicker && (
+
+      {showEmojiPicker && (
         <div className="absolute bottom-54 right-20 bg-white border border-gray-300 rounded-lg shadow-xl overflow-y-auto overflow-x-hidden max-h-[30vh] max-w-[70vh] z-20">
           {emojiError && <div className="p-3 text-center text-red-500 bg-red-100 border-b border-red-200">{emojiError}</div>}
-          
+
           {Object.keys(groupedEmojis).length > 0 ? (
             Object.keys(groupedEmojis).map((groupName) => (
               <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0">
                 <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize">{groupName.replace(/-/g, ' ')}</h3> {/* Formatear nombre de grupo */}
                 <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-1"> {/* Grilla responsiva */}
                   {groupedEmojis[groupName]?.map((emoji) => (
-                    <span 
-                      key={emoji.unicodeName} 
+                    <span
+                      key={emoji.unicodeName}
                       className="text-2xl sm:text-3xl lg:text-4xl text-center cursor-pointer select-none p-1 rounded-md hover:bg-gray-100 transition-colors duration-150"
                       onClick={() => handleSelectEmoji(emoji.character)}
                       title={emoji.unicodeName}

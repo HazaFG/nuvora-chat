@@ -1,11 +1,11 @@
 import ChatTemplate from "@/components/ChatTemplate";
 
-export default function MainPage() {
+export default function Rooms() {
   return (
     <>
       <div className="p-4 sm:ml-64 h-screen">
         <div className="h-full">
-          <ChatTemplate roomId='1' />
+          hello world
         </div>
       </div>
     </>
