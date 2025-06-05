@@ -282,33 +282,83 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
         <div className="text-red-500 p-2 text-center">{errorConexion}</div>
       )}
 
-      <div className="chat-messages">
+      <div className="chat-messages flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && !errorConexion ? (
-          <div className="p-2 text-gray-500 dark:text-gray-400">
+          <div className="p-2 text-gray-500 dark:text-gray-400 text-center">
             Cargando mensajes o inicia una conversación...
           </div>
         ) : (
           messages.map((msg) => (
             <div
               key={msg.id}
-              className={`chat-message ${msg.user_id === currentUserData?.id ? 'chat-message-user' : 'chat-message-bot'}`}
+              className={`flex items-end gap-2 ${msg.user_id === currentUserData?.id
+                ? 'justify-end' //mensajes a la derecha xd 
+                : 'justify-start' // mensajes de la izquierda
+                }`}
             >
-              <span className="silent italic bold">
-                {msg.name}:
-              </span>
+              {/* esta es la foto de perfil para mensajes que no son tuyos */}
+              {msg.user_id !== currentUserData?.id && (
+                <img
+                  src={msg.profile_picture || '/cloudWhite.png'}
+                  alt="Perfil"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                />
+              )}
 
-              <MediaDisplay media={msg.media} mimeType={msg.mime_type} />
-              {msg.text}
-              {msg.timestamp && (
-                <span className="message-time">
-                  {formatTime(msg.timestamp)}
+              <div
+                className={`flex flex-col p-3 rounded-lg max-w-[80%] md:max-w-[60%] lg:max-w-[50%] relative shadow-md ${msg.user_id === currentUserData?.id
+                  ? 'bg-green-200 dark:bg-green-700 rounded-br-none self-end text-right'
+                  : 'bg-white dark:bg-gray-700 rounded-bl-none self-start text-left'
+                  }`}
+              >
+                <span
+                  className={`font-bold text-sm mb-1 ${msg.user_id === currentUserData?.id
+                    ? 'text-green-800 dark:text-green-200'
+                    : 'text-blue-600 dark:text-blue-300'
+                    }`}
+                >
+                  {msg.name}:
                 </span>
+
+                {/* MediaDisplay con tamaño fijo */}
+                {msg.media && (
+                  <div className="my-2">
+                    <MediaDisplay
+                      media={msg.media}
+                      mimeType={msg.mime_type}
+                      className="w-[150px] h-[150px] object-cover rounded-md flex-shrink-0"
+                    />
+                  </div>
+                )}
+                <p className="text-gray-800 dark:text-gray-100 break-words whitespace-pre-wrap">
+                  {msg.text}
+                </p>
+                {msg.timestamp && (
+                  <span
+                    className={`text-xs mt-1 ${msg.user_id === currentUserData?.id
+                      ? 'text-green-700 dark:text-green-300'
+                      : 'text-gray-500 dark:text-gray-400'
+                      } self-end`}
+                  >
+                    {formatTime(msg.timestamp)}
+                  </span>
+                )}
+              </div>
+
+              {/* Perfl foto para mensajes del usuario actual */}
+              {msg.user_id === currentUserData?.id && (
+                <img
+                  src={currentUserData?.profile_picture || '/cloudWhite.png'}
+                  alt="Perfil"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                />
               )}
             </div>
           ))
         )}
         <div ref={messagesEndRef} /> {/* Punto de referencia para el scroll */}
       </div>
+
 
       <div className="chat-input">
         <input
