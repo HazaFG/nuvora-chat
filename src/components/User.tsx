@@ -8,7 +8,7 @@ interface UserData {
   email: string
   password: string
   confirm_password: string
-  profile_picture: File | null
+  profile_picture: string
 
 }
 
@@ -58,6 +58,79 @@ export const User = () => {
     return <div className="text-center mt-16">No se encontró información del usuario.</div>
   }
 
+  async function toBase64(file: File): string {
+    const reader = new FileReader();
+    let base64String = "silly"
+    const f = () => {
+      reader.onloadend = () => {
+        base64String = reader.result
+          .replace('data:', '')
+          .replace(/^.+,/, '');
+        console.log(base64String)
+      };
+    }
+
+    await reader.readAsDataURL(file);
+    return base64String
+  }
+
+
+  async function handleUserUpdate(requestOptions: any) {
+    const response = await fetch(`http://localhost:3000/api/users/update/${user.id}`, requestOptions)
+    const json = await response.json()
+    if (!response.ok) {
+      setFormError(json.message)
+      return
+    } else {
+      Cookies.set('name', user.name, { expires: 7, path: '/' });
+      location.reload()
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    if (user.password && user.password !== user.confirm_password) {
+      setFormError(new Error("Las contraseñas no coinciden"))
+      return
+    }
+
+    const reader = new FileReader();
+
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    };
+
+    //TODO actualizar cookie nombre de usuario, imagen que se pueda actualizar, con previsualizacion
+
+    // if (user.profile_picture) {
+    //   reader.onloadend = async () => {
+    //     const base64String = reader.result
+    //       .replace('data:', '')
+    //       .replace(/^.+,/, '');
+    //     body.profile_picture = base64String
+    //     requestOptions.body = JSON.stringify(body)
+    //     handleUserUpdate(requestOptions)
+    //   };
+    //   reader.readAsDataURL(user.profile_picture);
+    // } else {
+    //   handleUserUpdate(requestOptions)
+    // }
+
+    const response = await fetch(`http://localhost:3000/api/users/update/${user.id}`, requestOptions)
+    const json = await response.json()
+    if (!response.ok) {
+      setFormError(json.message)
+      return
+    } else {
+      Cookies.set('name', user.name, { expires: 7, path: '/' });
+      location.reload()
+    }
+
+  }
+
 
   return (
     <div className="p-4 sm:ml-64">
@@ -67,7 +140,7 @@ export const User = () => {
             <div className="w-full flex justify-center">
               <div className="relative group">
                 <img
-                  src={user.profile_picture || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
+                  src={`data:image/jpg;base64,${user.profile_picture}` || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
                   className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px] object-cover w-[150px] h-[150px]"
                   alt="Profile"
                   id="profile-picture-display"
@@ -82,7 +155,22 @@ export const User = () => {
                     type="file"
                     onChange={(e) => {
                       if (e.target.files) {
-                        setUser({ ...user, profile_picture: e.target.files[0] })
+                        // XD ya m kiero ir d vacas la neta
+                        // son como 90kb o algo asi qn sabe
+                        console.log(e.target.files[0].size)
+                        if (e.target.files[0].size > 70 * 1024) {
+                          setFormError(new Error("Las imagenes que subas deben de ser de menos de 70kb")
+                          )
+                          return
+                        }
+                        const reader = new FileReader();
+                        reader.onloadend = async () => {
+                          const base64String = reader.result
+                            .replace('data:', '')
+                            .replace(/^.+,/, '');
+                          setUser({ ...user, profile_picture: base64String })
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
                       }
                     }}
                     accept="image/*"
@@ -107,43 +195,7 @@ export const User = () => {
           </div>
 
           {(formError) ? <span>{formError.message}</span> : ""}
-          <form onSubmit={async (e) => {
-            e.preventDefault()
-            if (user.password === user.confirm_password) {
-
-              const reader = new FileReader();
-              const body: any = user
-
-              reader.onload = function() {
-                const bytes = new Uint8Array(this.result);
-                body.profile_picture = bytes
-              };
-
-              if (user.profile_picture) {
-                reader.readAsArrayBuffer(user.profile_picture);
-              }
-
-              console.log(body);
-
-              const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-              };
-
-              //TODO actualizar cookie nombre de usuario, imagen que se pueda actualizar, con previsualizacion
-              const response = await fetch(`http://localhost:3000/api/users/update/${user.id}`, requestOptions)
-              const json = await response.json()
-              if (!response.ok) {
-                setFormError(json.message)
-                return
-              } else {
-                alert("se actualizo pero no actualizo la pagina para debuggear")
-              }
-            } else {
-              setFormError(new Error("Las Contraseñas NO Coinciden"))
-            }
-          }} className="mt-6 py-6 border-t border-slate-200 text-center">
+          <form onSubmit={handleSubmit} className="mt-6 py-6 border-t border-slate-200 text-center">
             <div className="flex flex-wrap justify-center">
               <div className="w-full px-4">
                 <div className="font-light leading-relaxed text-slate-600 mb-4 space-y-4">
