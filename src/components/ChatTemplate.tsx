@@ -15,6 +15,8 @@ interface Message {
   media: string;
   mimeType: string;
   timestamp?: string;
+  user_id: number; //id del usuario
+  name: string;
 }
 
 interface Emoji {
@@ -25,7 +27,6 @@ interface Emoji {
 
 export default function ChatTemplate(): JSX.Element {
   // Referencia para mantener la instancia del socket a través de renders
-  const userId = Cookies.get('userId');
   const socketRef = useRef<Socket | null>(null);
 
   // Estado para los mensajes, inicializamos vacío para que el backend los cargue
@@ -42,6 +43,8 @@ export default function ChatTemplate(): JSX.Element {
   // TOFIX: Guarda el nombre de usuario en una coookie para poder guardarlo aqui
   const username = Cookies.get('name');
   const [token] = useState('123'); // dato para ser usado despues como id de user xd
+  const [currentUserData, setCurrentUserData] = useState<{ id: number; name: string; token: string } | null>(null);
+  const [loadingUserData, setLoadingUserData] = useState(true);
 
   //estados para las fucniones de los emojis
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false); //selector
@@ -51,16 +54,53 @@ export default function ChatTemplate(): JSX.Element {
 
   const inputRef = useRef<HTMLInputElement | null>(null); //pos de selector
 
+  //cargar los datos del usuario desde las cookies
+  useEffect(() => {
+    //este codigo se ejecuta solo en el cliente
+    const userIdCookie = Cookies.get('userId');
+    const userNameCookie = Cookies.get('name');
+    const userTokenCookie = Cookies.get('token');
+
+    if (userIdCookie && userNameCookie && userTokenCookie) {
+      const parsedUserId = parseInt(userIdCookie, 10);
+      if (!isNaN(parsedUserId)) { 
+        setCurrentUserData({
+          id: parsedUserId,
+          name: userNameCookie,
+          token: userTokenCookie,
+        });
+      } else {
+        setErrorConexion("ID de usuario no valido en la cookie.");
+      }
+    } else {
+      setErrorConexion("No cookies. Vuelve a iniciar sesion.");
+    }
+    setLoadingUserData(false); //carga inicial de cookies ha terminado
+  }, []);
+
   useEffect(() => {
     if (!websocketUrl) {
       setErrorConexion("URL del WebSocket no configurada en las variables de entorno.");
       return;
     }
 
+    //espera a que los datos del usuario esten cargados y sean validos
+    if (loadingUserData || !currentUserData) {
+      console.log("Esperando datos de usuario o usuario no logueado...");
+      setErrorConexion("Esperando datos de usuario. No se puede conectar al chat.");
+      return;
+    }
+
+    //si current data existe se obtienen los datos
+    const { id, name, token } = currentUserData;
+
+    console.log("Conectando con userId:", id, "username:", name, "token:", token);
+
     const newSocket = io(websocketUrl, {
       auth: {
         token: token,
         username: username,
+        userId: id,
         serverOffset: 0,
       },
     });
@@ -86,15 +126,13 @@ export default function ChatTemplate(): JSX.Element {
     // Escucha el evento 'chat message' que viene del backend equis de
     newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
       const { msg, media, mime_type, user_id, name, timestamp } = msg_wrapper
-      
-      const currentUser = user_id === userId; 
 
       setMessages((prev) => [
         ...prev,
         {
           id: prev.length + 1,
           text: msg,
-          fromUser: currentUser,
+          fromUser: (user_id === currentUserData.id),
           media: media,
           mime_type: mime_type,
           timestamp: timestamp,
@@ -113,7 +151,7 @@ export default function ChatTemplate(): JSX.Element {
     return () => {
       newSocket.disconnect();
     };
-  }, [username, token, userId]); //agregue userId Las dependencias aseguran que el efecto se re-ejecute si username/token cambian
+  }, [loadingUserData, currentUserData]); 
 
   // --- Lógica para Scroll Automático ---
   useEffect(() => {
@@ -179,37 +217,39 @@ export default function ChatTemplate(): JSX.Element {
 
   const handleSend = (): void => {
     const trimmed = input.trim();
-    // **Emite el mensaje al backend via Socket.IO**
-    const reader = new FileReader();
+    
+    //asegurarse de que el socket está conectado y tenemos los datos del usuario
+    if (!socketRef.current || !currentUserData || loadingUserData) {
+      console.warn("No se puede enviar el mensaje: Socket no conectado, usuario no autenticado o cargando.");
+      return;
+    }
 
-    reader.onload = function() {
-      const bytes = new Uint8Array(this.result as ArrayBuffer);
-      const mediaType = file.type.split('/')[0]
+    const { id, name } = currentUserData; //ID y nombre del usuario actual
 
-      //quiza agregamdo un if aqui se quite el error //luego lo checoooo
-      socketRef.current.emit('send message', {
-          media: bytes, 
-          msg: input, 
-          mime_type: mediaType, 
-          name: username, 
-          user_id: userId });
+    const emitMessage = (mediaData: string | Uint8Array, mimeType: string) => {
+      socketRef.current?.emit('send message', {
+        media: mediaData,
+        msg: trimmed,
+        mime_type: mimeType,
+        name: name, 
+        user_id: id 
+      });
     };
 
-    if (socketRef.current) {
-      if (file) {
-        reader.readAsArrayBuffer(file);
-      } else {
-        socketRef.current.emit('send message', { 
-          media: "", 
-          msg: trimmed, 
-          mime_type: "", 
-          name: username, 
-          user_id: userId });
-      }
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        const bytes = new Uint8Array(this.result as ArrayBuffer);
+        const mediaType = file.type.split('/')[0];
+        emitMessage(bytes, mediaType);
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      emitMessage("", ""); // Para mensajes sin archivo
     }
 
     setInput('');
-    //setFile(null);
+    setFile(null);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -250,7 +290,7 @@ export default function ChatTemplate(): JSX.Element {
           messages.map((msg) => (
             <div
               key={msg.id}
-              className={`chat-message ${msg.fromUser ? 'chat-message-user' : 'chat-message-bot'}`}
+              className={`chat-message ${msg.user_id === currentUserData?.id ? 'chat-message-user' : 'chat-message-bot'}`}
             >
               <span className="silent italic bold">
                 {msg.name}:
