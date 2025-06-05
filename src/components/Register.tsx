@@ -249,23 +249,6 @@ export const Register = () => {
               className="w-full border-b-2 border-[#2090F3] focus:outline-none focus:border-blue-500 placeholder-gray-400 pb-4 mb-8 lg:mb-12 lg:text-2xl"
             />
 
-            {/* Checkbox */}
-            <div className="flex items-start mb-8">
-              <input
-                type="checkbox"
-                className="mt-1 lg:w-5 lg:h-5 accent-[#2090F3]"
-                id="terms"
-                checked={termsAccepted} // Conectado al estado
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-              />
-              <label htmlFor="terms" className="ml-2 text-sm lg:text-lg text-gray-600">
-                Al marcar aceptas nuestros{" "}
-                <span className="text-[#2090F3] font-medium">
-                  Términos y condiciones
-                </span>
-              </label>
-            </div>
-
             {/* Botones */}
             <div className="flex space-x-4 flex-col">
               <button
@@ -275,12 +258,18 @@ export const Register = () => {
               >
                 {loading ? 'Registrando...' : 'Crear cuenta'}
               </button>
-
-              <Link
-                href="/login"
-                className="border border-gray-400 text-gray-400 font-semibold px-6 py-2 rounded-3xl w-full text-center lg:py-6 lg:text-2xl block mt-4"
-              >Ya soy miembro</Link>
             </div>
+
+            {/* Checkbox */}
+            <div className="flex items-start mt-8">
+              <label htmlFor="terms" className="ml-2 text-sm lg:text-lg text-gray-600">
+                ¿Ya eres miembro?{" "}
+                <Link href={'/login'} className="text-[#2090F3] font-medium">
+                  Inicia sesión
+                </Link>
+              </label>
+            </div>
+
 
           </form> {/* CIERRE DEL FORMULARIO */}
           <p className="flex justify-center mt-52 xl:hidden">Hecho con pasión y propósito</p>
