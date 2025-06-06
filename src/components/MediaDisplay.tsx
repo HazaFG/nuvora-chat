@@ -1,17 +1,17 @@
-import Image from "next/image"
-import Audio from "next/Audio"
+// MediaDisplay.tsx
+import Image from "next/image";
 import { useState } from "react";
 import AudioPlayer from "./AudioPlayer";
 import VideoPlayer from "./VideoPlayer";
 
 interface Props {
-  media: string
-  mimeType: string
+  media: string;
+  mimeType: string;
 }
 
 export default function MediaDisplay({ media, mimeType }: Props) {
   const [playSubmitSound, setPlaySubmitSound] = useState(false);
-  console.log(mimeType)
+
   switch (mimeType) {
     case "video":
       return (
@@ -19,9 +19,9 @@ export default function MediaDisplay({ media, mimeType }: Props) {
           src={media}
           play={playSubmitSound}
           onFinish={() => setPlaySubmitSound(false)}
+          className="w-full h-auto rounded-md"
         />
-      )
-      break;
+      );
     case "audio":
       return (
         <AudioPlayer
@@ -29,15 +29,20 @@ export default function MediaDisplay({ media, mimeType }: Props) {
           play={playSubmitSound}
           onFinish={() => setPlaySubmitSound(false)}
         />
-      )
-      break;
+      );
     case "image":
       return (
-        <Image src={`data:image/jpg;base64,${media}`} width={400} height={400} className="me-3 rounded-lg" alt="Flowbite Logo" />
-      )
-      break;
+        <Image
+          src={`data:image/jpg;base64,${media}`}
+          alt="Contenido multimedia"
+          className="w-full h-auto object-contain rounded-md"
+          width={1} // Mínimo para Next.js Image
+          height={1} // Mínimo para Next.js Image
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, 50vw"
+          style={{ width: '100%', height: 'auto' }}
+        />
+      );
     default:
-      return ""
-      break;
+      return null;
   }
 }

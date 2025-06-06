@@ -333,7 +333,7 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
                     <MediaDisplay
                       media={msg.media}
                       mimeType={msg.mime_type}
-                      className="max-w-full h-auto object-contain rounded-md"
+                      className="h-auto object-contain"
                     />
                   </div>
                 )}
