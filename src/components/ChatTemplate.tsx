@@ -4,6 +4,7 @@ import React, { JSX, useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
+import Spinner from './Spinner';
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
 const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY;
@@ -285,7 +286,8 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
       <div className="chat-messages flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && !errorConexion ? (
           <div className="p-2 text-gray-500 dark:text-gray-400 text-center">
-            Cargando mensajes o inicia una conversación...
+            {/* Cargando mensajes o inicia una conversación... */}
+            <Spinner />
           </div>
         ) : (
           messages.map((msg) => (
@@ -326,7 +328,7 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
                     <MediaDisplay
                       media={msg.media}
                       mimeType={msg.mime_type}
-                      className="w-[150px] h-[150px] object-cover rounded-md flex-shrink-0"
+                      className="w-[500px] h-[500px] object-cover rounded-md flex-shrink-0"
                     />
                   </div>
                 )}

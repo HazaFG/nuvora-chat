@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import Spinner from './Spinner';
 
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGIN_URL = `${BACKEND_API_BASE_URL}/api/auth/login`;
@@ -49,7 +50,7 @@ export const Login = () => {
       // por si el login jala bien
       if (data.token) {
         Cookies.set('token', data.token, { expires: 7, path: '/' });
-        setSuccess('¡Inicio de sesión exitoso! Redirigiendo al dashboard...');
+        // setSuccess('¡Inicio de sesión exitoso! Redirigiendo al dashboard...');
 
         // // Guarda el ID del usuario de la respuesta del backend
         if (data.user && data.user.id) { // Verifica que el objeto 'user' y su 'id' existan
@@ -62,7 +63,7 @@ export const Login = () => {
 
         setTimeout(() => {
           router.push('/dashboard/main');
-        }, 1500);
+        }, 0);
       } else {
         setError('Inicio de sesión exitoso, pero no se recibió el token de autenticación jaja tonto');
       }
@@ -80,7 +81,10 @@ export const Login = () => {
 
   return (
     <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] xl:overflow-hidden flex flex-col xl:flex-row">
+
       {/* Contenedor del Gradiente - Sección Izquierda */}
+      {loading && <Spinner />}
+
       <div className="flex-1 bg-gradient-to-b from-[#0C4A9D] to-[#47A6F9] text-white flex items-center p-8 flex-col h-screen lg:h-auto relative">
 
         {/* NUEVO DIV PARA AGRUPAR Y CENTRAR EL CONTENIDO FLEXIBLE */}

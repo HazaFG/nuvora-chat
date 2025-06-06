@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import Spinner from './Spinner';
+
 
 //url del backend
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
@@ -25,11 +27,6 @@ export const Register = () => {
 
     if (!name || !email || !password) {
       setError('Por favor, completa todos los campos requeridos.');
-      return;
-    }
-
-    if (!termsAccepted) {
-      setError('Debes aceptar los Términos y condiciones para registrarte.');
       return;
     }
 
@@ -61,7 +58,7 @@ export const Register = () => {
       setSuccess(data.message || '¡Registro exitoso! Redirigiendo a iniciar sesión...');
       setTimeout(() => {
         router.push('/login');
-      }, 2000);
+      }, 0);
 
     } catch (err) {
       console.error('Error al conectar con el servidor:', err);
@@ -73,6 +70,8 @@ export const Register = () => {
 
   return (
     <div className="h-[170vh] lg:h-[180vh] md:h-[170vh] xl:h-[100vh] xl:overflow-hidden flex flex-col xl:flex-row">
+      {loading && <Spinner />}
+
       {/* Contenedor del Gradiente - Sección Izquierda */}
       <div className="flex-1 bg-gradient-to-b from-[#0C4A9D] to-[#47A6F9] text-white flex items-center p-8 flex-col h-screen lg:h-auto relative">
 

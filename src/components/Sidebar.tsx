@@ -7,6 +7,7 @@ import { SidebarSessionItem } from "./SidebarSessionItem";
 import { useTheme } from '../hooks/useTheme';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import Spinner from "./Spinner";
 
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
@@ -87,7 +88,7 @@ export const Sidebar = () => {
 
       setTimeout(() => {
         router.push('/login');
-      }, 1500);
+      }, 0);
 
     } catch (err: any) {
       console.error('Error al conectar con el servidor:', err);
@@ -101,6 +102,8 @@ export const Sidebar = () => {
 
   return (
     <>
+      {loading && <Spinner />}
+
       <button
         onClick={() => setIsOpen(!isOpen)}
         type="button"

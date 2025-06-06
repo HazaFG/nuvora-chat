@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
+import Spinner from './Spinner';
 
 interface UserData {
   id: number
@@ -46,7 +47,7 @@ export const User = () => {
   }, [])
 
   if (loading) {
-    return <div className="text-center mt-16">Cargando información del usuario...</div>
+    return <Spinner />; // Se retorna el Spinner directamente, ocupando toda la pantalla
   }
 
   if (error) {

@@ -1,4 +1,5 @@
 import ChatTemplate from "@/components/ChatTemplate"
+import Spinner from "@/components/Spinner"
 
 export default async function Page({
   params,
@@ -9,12 +10,15 @@ export default async function Page({
 }) {
   const { id } = await params
 
-  return (<>
-    <div className="p-4 sm:ml-64 h-screen">
-      <div className="h-full">
-        <ChatTemplate roomId={id} />
+  return (
+    <>
+      {loading && <Spinner />}
+
+      <div className="p-4 sm:ml-64 h-screen">
+        <div className="h-full">
+          <ChatTemplate roomId={id} />
+        </div>
       </div>
-    </div>
-  </>
+    </>
   )
 }

@@ -33,7 +33,7 @@ export default function MediaDisplay({ media, mimeType }: Props) {
       break;
     case "image":
       return (
-        <Image src={`data:image/jpg;base64,${media}`} width={40} height={20} className="me-3" alt="Flowbite Logo" />
+        <Image src={`data:image/jpg;base64,${media}`} width={400} height={400} className="me-3 rounded-lg" alt="Flowbite Logo" />
       )
       break;
     default:
