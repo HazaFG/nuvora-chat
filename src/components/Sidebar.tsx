@@ -20,7 +20,7 @@ const menuItems = [
     name: 'Conversaciones'
   },
   {
-    path: '/dashboard/nosequeponeraqui',
+    path: '/dashboard/createRooms',
     icon: <IoAddCircleOutline size={22} />,
     name: 'Crear sala'
   },
