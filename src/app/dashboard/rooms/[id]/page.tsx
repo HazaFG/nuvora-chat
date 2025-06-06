@@ -12,7 +12,6 @@ export default async function Page({
 
   return (
     <>
-      {loading && <Spinner />}
 
       <div className="p-4 sm:ml-64 h-screen">
         <div className="h-full">
