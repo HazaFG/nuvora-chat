@@ -46,9 +46,9 @@ export const User = () => {
         setUser(data.user)
 
         if (data.user.profile_picture) {
-            setPreviewImage(`data:image/jpeg;base64,${data.user.profile_picture}`);
+          setPreviewImage(`data:image/jpeg;base64,${data.user.profile_picture}`);
         } else {
-            setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg");
+          setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg");
         }
 
       } catch (e: any) {
@@ -103,7 +103,7 @@ export const User = () => {
               height = MAX_HEIGHT;
             }
           }
-          
+
           canvas.width = width;
           canvas.height = height;
 
@@ -132,7 +132,7 @@ export const User = () => {
       const file = e.target.files[0];
       setFormError(null); // Limpia errores anteriores
 
-      const MAX_ORIGINAL_FILE_SIZE_MB = 5; 
+      const MAX_ORIGINAL_FILE_SIZE_MB = 5;
       if (file.size > MAX_ORIGINAL_FILE_SIZE_MB * 1024 * 1024) {
         setFormError(`El archivo original es demasiado grande. Debe ser menor de ${MAX_ORIGINAL_FILE_SIZE_MB}MB.`);
         return;
@@ -140,13 +140,13 @@ export const User = () => {
 
       try {
         const compressedBase64 = await compressImage(file);
-        
+
         //asigna la Base64 comprimida al estado del usuario
         setUser(prevUser => prevUser ? { ...prevUser, profile_picture: compressedBase64 } : null);
 
         //upd previsualizacion con el Base64 comprimido (con prefijo para display)
         setPreviewImage(`data:image/jpeg;base64,${compressedBase64}`);
-        
+
       } catch (err: any) {
         console.error("Error al comprimir la imagen:", err);
         setFormError(err.message || "Error al procesar la imagen para subir.");
@@ -176,9 +176,9 @@ export const User = () => {
     if (user.password) {
       userDataToUpdate.password = user.password;
     }
-    
-    if (user.profile_picture) { 
-        userDataToUpdate.profile_picture = user.profile_picture;
+
+    if (user.profile_picture) {
+      userDataToUpdate.profile_picture = user.profile_picture;
     }
 
     const requestOptions = {
@@ -186,7 +186,7 @@ export const User = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userDataToUpdate)
     };
-    
+
     handleUserUpdate(requestOptions);
   }
 
@@ -200,15 +200,15 @@ export const User = () => {
         return;
       } else {
         Cookies.set('name', user.name, { expires: 7, path: '/' });
-        
-        location.reload(); 
+
+        location.reload();
       }
     } catch (e: any) {
       console.error("Error en la petición de actualización:", e);
       setFormError(e.message || "Error de red al actualizar.");
     }
   }
-  
+
 
 
   return (
@@ -220,16 +220,16 @@ export const User = () => {
               <div className="relative group">
                 <img
                   src={`data:image/jpg;base64,${user.profile_picture}` || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
-                  className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px] object-cover w-[150px] h-[150px]"
+                  className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-18 max-w-[150px] object-cover w-[150px] h-[150px]"
                   alt="Profile"
                   id="profile-picture-display"
                 />
 
                 <label
-                  className="absolute -m-16 -ml-20 lg:-ml-16 max-w-[150px] w-[150px] h-[150px] rounded-full flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-70 transition-opacity duration-300 cursor-pointer"
+                  className="absolute -m-16 -ml-20 lg:-ml-18 max-w-[150px] w-[150px] h-[150px] rounded-full flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-70 transition-opacity duration-300 cursor-pointer"
                 >
                   <span className="text-white text-sm">Cambiar Imagen</span>
-                   <input
+                  <input
                     id="profile-picture-upload"
                     type="file"
                     onChange={handleFileChange}
@@ -295,7 +295,7 @@ export const User = () => {
 
                 <button
                   type='submit'
-                  className="barras-texto text-user mt-4 px-6 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors mr-2"
+                  className="cursor-pointer barras-texto text-user mt-4 px-6 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors mr-2"
                 >Editar información</button>
               </div>
             </div>
