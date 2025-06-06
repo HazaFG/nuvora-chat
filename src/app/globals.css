@@ -104,7 +104,6 @@ html.dark body {
 
 .barras-texto::placeholder {
   color: var(--foreground);
-  /* Un gris claro, puedes ajustarlo a tu gusto */
 }
 
 .barras-texto.text-user:hover {
@@ -113,7 +112,7 @@ html.dark body {
 }
 
 .chat-container {
-  height: 95vh;
+  height: 89vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -122,7 +121,101 @@ html.dark body {
   border-radius: 1rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   padding: 1rem;
+  min-height: 400px;
 }
+
+@media (min-width: 640px) {
+  .chat-container {
+    width: 95%;
+    margin: 0 auto;
+    /* Centrarlo */
+    height: 95vh;
+  }
+}
+
+@media (min-width: 768px) {
+  .chat-container {
+    width: 80%;
+    height: 85vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chat-container {
+    width: 70%;
+    height: 80vh;
+  }
+}
+
+@media (min-width: 1280px) {
+  .chat-container {
+    width: 60%;
+    height: 75vh;
+  }
+}
+
+@media (min-width: 1536px) {
+  .chat-container {
+    width: 100%;
+    height: 95vh;
+  }
+}
+
+/* Estilos de los botones de input */
+.chat-input button {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-send-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.chat-send-button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para los nuevos botones de emoji y archivo */
+.chat-action-button {
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border-color, #ccc);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.chat-action-button:hover {
+  background-color: var(--sidebar-hover-bg);
+  color: var(--sidebar-icon-hover);
+  border-color: var(--sidebar-icon-hover);
+}
+
+/* oculatmos el input de tipo file por defecto */
+.hidden-file-input {
+  display: none;
+}
+
+/* Ajustes para el picker de emojis (lo manejaremos más con Tailwind en el TSX) */
+html.dark .emoji-picker-container {
+  background-color: #2d2d2d;
+  border-color: #444;
+}
+
+html.dark .emoji-picker-container h3 {
+  color: var(--foreground);
+}
+
+html.dark .emoji-picker-container span:hover {
+  background-color: #3a3a3a;
+  /* Darker hover for emojis in dark mode */
+}
+
 
 .chat-header {
   padding: 1rem;

@@ -169,7 +169,7 @@ export const Sidebar = () => {
           <button
             onClick={toggleTheme}
             // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
-            className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
+            className="cursor-pointer flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
             style={{ color: 'var(--sidebar-text)' }}
           >
             {theme === 'dark' ? (
@@ -203,7 +203,7 @@ export const Sidebar = () => {
           <button
             onClick={handleCerrarSesion}
             // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
-            className="flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
+            className="cursor-pointer flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
             style={{ color: 'var(--sidebar-text)' }}
           >
             {(

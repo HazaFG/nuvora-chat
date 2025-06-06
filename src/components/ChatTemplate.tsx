@@ -1,6 +1,7 @@
 'use client';
 
 import React, { JSX, useEffect, useRef, useState } from 'react';
+import { IoSend, IoHappyOutline, IoAttachOutline } from "react-icons/io5";
 import io, { Socket } from 'socket.io-client';
 import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
@@ -274,6 +275,12 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
     return `${hours}:${minutes}`;
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileButtonClick = () => {
+    // Simula el click en el input de archivo oculto
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="chat-container">
@@ -294,11 +301,10 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
             <div
               key={msg.id}
               className={`flex items-end gap-2 ${msg.user_id === currentUserData?.id
-                ? 'justify-end' //mensajes a la derecha xd 
-                : 'justify-start' // mensajes de la izquierda
+                ? 'justify-end'
+                : 'justify-start'
                 }`}
             >
-              {/* esta es la foto de perfil para mensajes que no son tuyos */}
               {msg.user_id !== currentUserData?.id && (
                 <img
                   src={msg.profile_picture || '/cloudWhite.png'}
@@ -322,13 +328,12 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
                   {msg.name}:
                 </span>
 
-                {/* MediaDisplay con tamaño fijo */}
                 {msg.media && (
-                  <div className="my-2">
+                  <div className="my-2 max-w-full">
                     <MediaDisplay
                       media={msg.media}
                       mimeType={msg.mime_type}
-                      className="w-[500px] h-[500px] object-cover rounded-md flex-shrink-0"
+                      className="max-w-full h-auto object-contain rounded-md"
                     />
                   </div>
                 )}
@@ -347,7 +352,6 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
                 )}
               </div>
 
-              {/* Perfl foto para mensajes del usuario actual */}
               {msg.user_id === currentUserData?.id && (
                 <img
                   src={currentUserData?.profile_picture || '/cloudWhite.png'}
@@ -358,81 +362,105 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
             </div>
           ))
         )}
-        <div ref={messagesEndRef} /> {/* Punto de referencia para el scroll */}
+        <div ref={messagesEndRef} />
       </div>
 
-
-      <div className="chat-input">
+      {/* Nuevo chat-input con flexbox y responsividad */}
+      <div className="chat-input flex flex-col gap-2 p-4 relative sm:flex-row sm:gap-2 sm:p-2 sm:items-center">
+        {/* Input de texto */}
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Escribe tu mensaje..."
-          className="chat-text-input"
-          disabled={!!errorConexion} // Deshabilita el input si hay un error de conexión
+          className="chat-text-input flex-1 w-full order-1 sm:order-none" /* w-full y order para móviles */
+          disabled={!!errorConexion}
           ref={inputRef}
         />
-        <button
-          onClick={handleSend}
-          className="chat-send-button"
-          disabled={!!errorConexion || (input.trim() === '' && !file)} //deshabilita si hay error o input vacio
-        >
-          Enviar
-        </button>
 
-        <button
-          onClick={handleEmojiPicker}
-          className="chat-emoji-button cursor-pointer"
-          disabled={!!errorConexion}
-        >
-          Emoji
-        </button>
-      </div>
+        {/* Contenedor de botones */}
+        <div className="flex justify-between items-center gap-2 w-full order-2 sm:w-auto sm:order-none"> {/* order para móviles */}
+          {/* Botón de adjuntar archivo */}
+          <button
+            onClick={handleFileButtonClick}
+            className="chat-action-button text-2xl"
+            disabled={!!errorConexion}
+            aria-label="Adjuntar archivo"
+          >
+            <IoAttachOutline />
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) => {
+              if (e.target.files) {
+                setFile(e.target.files[0]);
+              }
+            }}
+            className="hidden-file-input"
+            disabled={!!errorConexion}
+          />
 
-      {showEmojiPicker && (
-        <div className="absolute bottom-54 right-20 bg-white border border-gray-300 rounded-lg shadow-xl overflow-y-auto overflow-x-hidden max-h-[30vh] max-w-[70vh] z-20">
-          {emojiError && <div className="p-3 text-center text-red-500 bg-red-100 border-b border-red-200">{emojiError}</div>}
+          {/* Botón de Emoji */}
+          <button
+            onClick={handleEmojiPicker}
+            className="chat-action-button text-2xl"
+            disabled={!!errorConexion}
+            aria-label="Seleccionar emoji"
+          >
+            <IoHappyOutline />
+          </button>
 
-          {Object.keys(groupedEmojis).length > 0 ? (
-            Object.keys(groupedEmojis).map((groupName) => (
-              <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0">
-                <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize">{groupName.replace(/-/g, ' ')}</h3> {/* Formatear nombre de grupo */}
-                <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-1"> {/* Grilla responsiva */}
-                  {groupedEmojis[groupName]?.map((emoji) => (
-                    <span
-                      key={emoji.unicodeName}
-                      className="text-2xl sm:text-3xl lg:text-4xl text-center cursor-pointer select-none p-1 rounded-md hover:bg-gray-100 transition-colors duration-150"
-                      onClick={() => handleSelectEmoji(emoji.character)}
-                      title={emoji.unicodeName}
-                    >
-                      {emoji.character}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))
-          ) : (
-            !emojiError && <div className="p-3 text-center text-gray-500">Cargando emojis...</div>
-          )}
+          {/* Botón de micrófono o de audio por si llegamos a grabar audio jiji */}
+          {/* <button
+            onClick={() => console.log('Micrófono presionado')}
+            className="chat-action-button text-2xl"
+            disabled={!!errorConexion}
+            aria-label="Enviar mensaje de voz"
+          >
+            <IoMicOutline />
+          </button> */}
+
+          {/* Botón de enviar al final de los botones en móvil, al final de la fila en desktop) */}
+          <button
+            onClick={handleSend}
+            className="chat-send-button text-2xl ml-auto sm:ml-0"
+            disabled={!!errorConexion || (input.trim() === '' && !file)}
+            aria-label="Enviar mensaje"
+          >
+            <IoSend />
+          </button>
         </div>
-      )}
 
-      <div className='chat-input'>
-        <input
-          type="file"
-          onChange={(e) => {
-            if (e.target.files) {
-              setFile(e.target.files[0])
-            }
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Escribe tu mensaje..."
-          className="chat-text-input"
-          disabled={!!errorConexion} // Deshabilita el input si hay un error de conexión
-        />
+        {showEmojiPicker && (
+          <div className="emoji-picker-container absolute bottom-[calc(100%+0.5rem)] right-0 bg-white border border-gray-300 rounded-lg shadow-xl overflow-y-auto max-h-[50vh] w-full md:w-[400px] z-20 dark:bg-gray-800 dark:border-gray-700">
+            {emojiError && <div className="p-3 text-center text-red-500 bg-red-100 border-b border-red-200">{emojiError}</div>}
+
+            {Object.keys(groupedEmojis).length > 0 ? (
+              Object.keys(groupedEmojis).map((groupName) => (
+                <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0 dark:border-gray-700">
+                  <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize dark:text-gray-300">{groupName.replace(/-/g, ' ')}</h3>
+                  <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-1">
+                    {groupedEmojis[groupName]?.map((emoji) => (
+                      <span
+                        key={emoji.unicodeName}
+                        className="text-2xl sm:text-3xl lg:text-4xl text-center cursor-pointer select-none p-1 rounded-md hover:bg-gray-100 transition-colors duration-150 dark:hover:bg-gray-700"
+                        onClick={() => handleSelectEmoji(emoji.character)}
+                        title={emoji.unicodeName}
+                      >
+                        {emoji.character}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              !emojiError && <div className="p-3 text-center text-gray-500 dark:text-gray-400">Cargando emojis...</div>
+            )}
+          </div>
+        )}
       </div>
-
     </div>
   );
 }
