@@ -370,13 +370,13 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
               <div
                 className={`flex flex-col p-3 rounded-lg max-w-[80%] md:max-w-[60%] lg:max-w-[50%] relative shadow-md ${msg.user_id === currentUserData?.id
-                  ? 'bg-green-200 dark:bg-green-700 rounded-br-none self-end text-right'
+                  ? 'bg-green-200 dark:bg-[#1694FA] rounded-br-none self-end text-right'
                   : 'bg-white dark:bg-gray-700 rounded-bl-none self-start text-left'
                   }`}
               >
                 <span
                   className={`font-bold text-sm mb-1 ${msg.user_id === currentUserData?.id
-                    ? 'text-green-800 dark:text-green-200'
+                    ? 'text-[#e3e3e3]'
                     : 'text-blue-600 dark:text-blue-300'
                     }`}
                 >
@@ -406,13 +406,15 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
                 )}
               </div>
 
-              {msg.user_id === currentUserData?.id && (
-                <img
-                  src={(msg.profilePicture) ? `data:image/png;base64,${msg.profilePicture}` : '/cloudWhite.png'}
-                  alt="Perfil"
-                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                />
-              )}
+              {
+                msg.user_id === currentUserData?.id && (
+                  <img
+                    src={(msg.profilePicture) ? `data:image/png;base64,${msg.profilePicture}` : '/cloudWhite.png'}
+                    alt="Perfil"
+                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                  />
+                )
+              }
             </div>
           ))
         )}
@@ -515,6 +517,6 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
