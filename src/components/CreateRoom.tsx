@@ -96,11 +96,20 @@ export const CreateRoom = () => {
     setFormError(null);
     setLoading(true);
 
-    if (roomSummary.length > MAX_SUMMARY) {
+    if (roomName.length > MAX_SUMMARY) {
       setLoading(false);
-      toast.error(`La descripción no puece tener más de ${MAX_SUMMARY} carácteres`)
+      toast.error(`El nombre no puede tener más de ${MAX_SUMMARY} carácteres`)
       return
     }
+
+
+    if (roomSummary.length > MAX_SUMMARY) {
+      setLoading(false);
+      toast.error(`La descripción no puede tener más de ${MAX_SUMMARY} carácteres`)
+      return
+    }
+
+
 
 
 
