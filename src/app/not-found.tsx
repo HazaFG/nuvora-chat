@@ -1,11 +1,13 @@
 import Link from "next/link";
+import Image from 'next/image'
 
 export default function NotFound() {
   return (
     <>
       <main className="grid min-h-full h-[100vh] place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
         <div className="text-center">
-          <p className="text-base font-semibold text-[#1694FA] indigo-600">404</p>
+          <Image src={'/cloudWhite.png'} alt="Nuvora Chat" width={100} height={100} className="mx-auto" />
+          {/* <p className="text-base font-semibold text-[#1694FA] indigo-600">404</p> */}
           <h1 className="mt-4 text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">
             Página no encontrada
           </h1>
