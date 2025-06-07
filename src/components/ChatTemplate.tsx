@@ -1,12 +1,13 @@
 'use client';
 
 import React, { JSX, useEffect, useRef, useState } from 'react';
-import { IoSend, IoHappyOutline, IoAttachOutline } from "react-icons/io5";
+import { IoSend, IoHappyOutline, IoAttachOutline, IoLogOutOutline } from "react-icons/io5";
 import io, { Socket } from 'socket.io-client';
 import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
 import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
 const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY;
@@ -74,10 +75,48 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     // TODO: navigate to general chat or idunno
     if (!response.ok) {
       router.push("/dashboard/main")
+      //return;
     }
     const json = await response.json()
     setRoom(json.room)
   }
+
+  const handleLeaveRoom = async () => {
+    // Asegúrate de tener el userId y el roomId
+    const userId = Cookies.get('userId');
+    if (!userId || !room?.id) {
+      toast.error('Error: Faltan datos de usuario o de la sala para salir.');
+      return;
+    }
+
+    // Opcional: una confirmación antes de salir
+    if (!confirm(`¿Estás seguro de que quieres salir de "${room.name || 'esta sala'}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/api/rooms/leave-room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: parseInt(userId, 10), roomId: room.id }), 
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al salir de la sala.');
+      }
+
+      toast.success(data.message || 'Has salido de la sala correctamente.');
+      router.push('/dashboard/rooms'); 
+      
+    } catch (error: any) {
+      console.error('Error al salir de la sala:', error);
+      toast.error(error.message || 'Error en el servidor al salir de la sala.');
+    }
+  };
 
   useEffect(() => {
     fetchEmojis();
@@ -332,13 +371,26 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
   return (
     <div className="chat-container">
-      <div className="chat-header flex items-center space-x-2">
-        <img
-          src={(room?.image) ? `data:image/png;base64,${room.image}` : '/cloudWhite.png'}
-          alt="Logo"
-          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-        />
-        <span className="font-semibold text-lg">Sala {room?.name}</span>
+      <div className="chat-header flex items-center justify-between p-4 space-x-2">
+        
+        <div className="flex items-center space-x-2">
+
+          <img
+            src={(room?.image) ? `data:image/png;base64,${room.image}` : '/cloudWhite.png'}
+            alt="Logo"
+            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+          />
+          <span className="font-semibold text-lg">Sala {room?.name}</span>
+        </div>
+
+        <button
+          onClick={handleLeaveRoom}
+          className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+          aria-label="Salir de la sala"
+        >
+          <IoLogOutOutline size={24} />
+        </button>
+
       </div>
 
       {errorConexion && (
