@@ -15,6 +15,7 @@ interface Message {
   text: string;
   fromUser: boolean; // Para diferenciar si es un mensaje enviado por este cliente o recibido
   media: string;
+  profilePicture: string; // estyo es terrible porque caada mensaje tiene la imagen y pues XD DDDDDDDDDDDD pero tengo machin hambre, hay manera d cachearla
   mimeType: string;
   timestamp?: string;
   user_id: number; //id del usuario
@@ -126,7 +127,6 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       setMessagesLength(totalMessages)
     });
 
-
     newSocket.on('connect_error', (err) => {
       console.error('Error de conexión de socket:', err.message);
       setErrorConexion(`Error de conexión al chat: ${err.message}. Asegúrate de que el backend esté corriendo.`);
@@ -134,12 +134,26 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
     // Escucha el evento 'chat message' que viene del backend equis de
     newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
-      const { msg, media, mime_type, user_id, name, timestamp } = msg_wrapper
+      const { msg, media, mime_type, user_id, name, timestamp, profile_picture } = msg_wrapper
+
+      // cache system idea 
+      // the only problem is that i would require to also
+      // know in the backend if the profile picture has been sent
+      // before, which is not quite clear how that would be a thing
+      // i think the best way possible for this would be when the client
+      // joins to a room just get all the profile pictures from every user
+      // cache them in some object with the users id
+      // when a new user joins 
+      //
+      // if (!profilePicturesCache[id]) {
+      //   profilePicturesCache[id] = profile_picture
+      // }
 
       setMessages((prev) => [
         ...prev,
         {
           id: prev.length + 1,
+          profilePicture: profile_picture,
           text: msg,
           fromUser: (user_id === currentUserData.id),
           media: media,
@@ -314,7 +328,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
             >
               {msg.user_id !== currentUserData?.id && (
                 <img
-                  src={msg.profile_picture || '/cloudWhite.png'}
+                  src={`data:image/jpg;base64,${msg.profilePicture}` || '/cloudWhite.png'}
                   alt="Perfil"
                   className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                 />
@@ -361,7 +375,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
               {msg.user_id === currentUserData?.id && (
                 <img
-                  src={currentUserData?.profile_picture || '/cloudWhite.png'}
+                  src={`data:image/png;base64,${msg.profilePicture}` || '/cloudWhite.png'}
                   alt="Perfil"
                   className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                 />
