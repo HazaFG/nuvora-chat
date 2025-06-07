@@ -81,6 +81,20 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     setRoom(json.room)
   }
 
+  async function checkUserRoomSituationship(roomId: string, userId: string) {
+    const response = await fetch(
+      `http://localhost:3000/api/rooms/user-rooms-situationship/${roomId}/${userId}`
+    )
+    // TODO: navigate to general chat or idunno
+    const json = await response.json()
+    if (!json.rooms.length) {
+      router.push("/dashboard/main")
+      toast.error("No te has unido a esta sala")
+      return
+    }
+  }
+
+
   const handleLeaveRoom = async () => {
     // Asegúrate de tener el userId y el roomId
     const userId = Cookies.get('userId');
@@ -123,6 +137,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     fetchEmojis();
     const userIdCookie = Cookies.get('userId');
     fetchRoom(roomId, userIdCookie || "")
+    checkUserRoomSituationship(roomId, userIdCookie || "")
   }, [])
 
   //cargar los datos del usuario desde las cookies
