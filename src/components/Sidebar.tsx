@@ -8,17 +8,26 @@ import { useTheme } from '../hooks/useTheme';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Spinner from "./Spinner";
+import { SidebarRoomItem } from "./SidebarRoomItem";
 
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
 
+
+// const roomItems = [
+//   {
+//
+//   }
+// ]
+
+
 //Aqui vamos a traernos en forma de arreglo todo nuestos elementos de SideBarMenuItem
 const menuItems = [
-  {
-    path: '/dashboard/main',
-    icon: <IoChatboxEllipsesOutline size={22} />,
-    name: 'Conversaciones'
-  },
+  // {
+  //   path: '/dashboard/main',
+  //   icon: <IoChatboxEllipsesOutline size={22} />,
+  //   name: 'Conversaciones'
+  // },
   {
     path: '/dashboard/createRooms',
     icon: <IoAddCircleOutline size={22} />,
@@ -151,8 +160,13 @@ export const Sidebar = () => {
             <h1>Conversaciones</h1>
           </div>
 
-          {/*Aqui es donde esta la lista de elementos iterables relacionados con las salas*/}
           <div className="mt-2">
+            <SidebarRoomItem></SidebarRoomItem>
+          </div>
+
+
+          {/*Aqui es donde esta la lista de elementos iterables relacionados con las salas*/}
+          <div>
             {
               menuItems.map(element => (
                 <SidebarMenuItem

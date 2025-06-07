@@ -23,7 +23,6 @@ export const SidebarMenuItem = ({ path, icon, name }: props) => {
             {icon}
           </div>
           <span className="ms-3" style={{ color: 'var(--sidebar-text)' }}>{name}</span>
-          <span className="inline-flex items-center justify-center px-2 ms-8 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
         </Link>
       </li>
     </ul>
