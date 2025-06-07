@@ -33,7 +33,7 @@
   --sidebar-seleccion: #f3f4f6;
   --sidebar-hover-bg: #eaf0fd;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #f3f4f6;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -534,6 +534,7 @@ html.dark {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
