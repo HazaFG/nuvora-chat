@@ -100,7 +100,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: parseInt(userId, 10), roomId: room.id }), 
+        body: JSON.stringify({ userId: parseInt(userId, 10), roomId: room.id }),
       });
 
       const data = await response.json();
@@ -110,8 +110,9 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       }
 
       toast.success(data.message || 'Has salido de la sala correctamente.');
-      router.push('/dashboard/rooms'); 
-      
+      // router.push('/dashboard/rooms');
+      window.location.href = `/dashboard/rooms`;
+
     } catch (error: any) {
       console.error('Error al salir de la sala:', error);
       toast.error(error.message || 'Error en el servidor al salir de la sala.');
@@ -372,7 +373,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   return (
     <div className="chat-container">
       <div className="chat-header flex items-center justify-between p-4 space-x-2">
-        
+
         <div className="flex items-center space-x-2">
 
           <img
