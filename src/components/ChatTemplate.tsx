@@ -27,7 +27,7 @@ interface Emoji {
   group: string;
 }
 
-export default function ChatTemplate({ roomId }: string): JSX.Element {
+export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Element {
   // Referencia para mantener la instancia del socket a través de renders
   const socketRef = useRef<Socket | null>(null);
 
@@ -35,6 +35,7 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
+  const [messagesLength, setMessagesLength] = useState<number>(Infinity);
 
   // Referencia para hacer scroll automático al final de los mensajes
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -121,6 +122,11 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
       setErrorConexion(`Desconectado: ${reason}. Intentando reconectar...`);
     });
 
+    newSocket.on('messages length', (totalMessages) => {
+      setMessagesLength(totalMessages)
+    });
+
+
     newSocket.on('connect_error', (err) => {
       console.error('Error de conexión de socket:', err.message);
       setErrorConexion(`Error de conexión al chat: ${err.message}. Asegúrate de que el backend esté corriendo.`);
@@ -138,6 +144,7 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
           fromUser: (user_id === currentUserData.id),
           media: media,
           mime_type: mime_type,
+          mimeType: mime_type, // fix pedorro xd
           timestamp: timestamp,
           user_id: user_id,
           name: name
@@ -291,7 +298,7 @@ export default function ChatTemplate({ roomId }: string): JSX.Element {
       )}
 
       <div className="chat-messages flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && !errorConexion ? (
+        {(messages.length < messagesLength) ? (
           <div className="p-2 text-gray-500 dark:text-gray-400 text-center">
             {/* Cargando mensajes o inicia una conversación... */}
             <Spinner />
