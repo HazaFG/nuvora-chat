@@ -462,7 +462,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
               Object.keys(groupedEmojis).map((groupName) => (
                 <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0 dark:border-gray-700">
                   <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize dark:text-gray-300">{groupName.replace(/-/g, ' ')}</h3>
-                  <div className="grid grid-cols-8 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-14 xl:grid-cols-16 gap-1">
+                  <div className="grid grid-cols-8 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-7 xl:grid-cols-6 gap-1">
                     {groupedEmojis[groupName]?.map((emoji) => (
                       <span
                         key={emoji.unicodeName}
