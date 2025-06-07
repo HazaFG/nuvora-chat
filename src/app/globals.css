@@ -539,3 +539,381 @@ html.dark {
     @apply bg-background text-foreground;
   }
 }
+
+/* ANIMACION DE LAS NUBEEEEEEES */
+
+/* Animación para el desvanecimiento (ya deberías tener algunas, estas son de ejemplo) */
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-late {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-down-slow {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Animación de Nubes --- */
+
+/* Contenedor de las nubes */
+.animated-clouds {
+  position: absolute;
+  /* Posiciona las nubes absolutamente dentro del contenedor principal */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Asegura que las nubes no interfieran con los clics */
+  z-index: 0;
+  /* Asegura que las nubes estén detrás del contenido */
+}
+
+/* Estilos base para una nube */
+.cloud {
+  position: absolute;
+  background: white;
+  /* Color de la nube */
+  border-radius: 50%;
+  opacity: 0.2;
+  /* Ligeramente transparentes para un efecto de fondo */
+  filter: blur(8px);
+  /* Efecto de desenfoque para que se vean más etéreas */
+  animation: floatCloud linear infinite;
+  /* Animación de movimiento */
+}
+
+/* Formas y tamaños individuales para cada nube */
+.cloud-1 {
+  width: 150px;
+  height: 90px;
+  top: 10%;
+  left: -20%;
+  /* Empieza fuera de la pantalla */
+  animation-duration: 25s;
+  /* Duración de la animación */
+  animation-delay: 0s;
+  transform: scale(0.8);
+}
+
+.cloud-1::before,
+.cloud-1::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-1::before {
+  width: 80px;
+  height: 80px;
+  top: -30px;
+  left: 50px;
+}
+
+.cloud-1::after {
+  width: 100px;
+  height: 100px;
+  top: -10px;
+  left: 90px;
+}
+
+.cloud-2 {
+  width: 200px;
+  height: 120px;
+  top: 40%;
+  right: -20%;
+  /* Empieza fuera de la pantalla por la derecha */
+  animation-duration: 35s;
+  animation-delay: 5s;
+  transform: scale(1.1);
+}
+
+.cloud-2::before,
+.cloud-2::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-2::before {
+  width: 100px;
+  height: 100px;
+  top: -40px;
+  left: 60px;
+}
+
+.cloud-2::after {
+  width: 130px;
+  height: 130px;
+  top: -20px;
+  left: 100px;
+}
+
+.cloud-3 {
+  width: 120px;
+  height: 70px;
+  bottom: 20%;
+  left: -15%;
+  animation-duration: 30s;
+  animation-delay: 10s;
+  transform: scale(0.7);
+}
+
+.cloud-3::before,
+.cloud-3::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-3::before {
+  width: 60px;
+  height: 60px;
+  top: -20px;
+  left: 30px;
+}
+
+.cloud-3::after {
+  width: 80px;
+  height: 80px;
+  top: -10px;
+  left: 70px;
+}
+
+.cloud-4 {
+  width: 180px;
+  height: 110px;
+  top: 25%;
+  left: -25%;
+  animation-duration: 40s;
+  animation-delay: 15s;
+  transform: scale(1.0);
+}
+
+.cloud-4::before,
+.cloud-4::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-4::before {
+  width: 90px;
+  height: 90px;
+  top: -35px;
+  left: 50px;
+}
+
+.cloud-4::after {
+  width: 110px;
+  height: 110px;
+  top: -15px;
+  left: 80px;
+}
+
+.cloud-5 {
+  width: 160px;
+  height: 100px;
+  bottom: 10%;
+  right: -25%;
+  animation-duration: 33s;
+  animation-delay: 20s;
+  transform: scale(0.9);
+}
+
+.cloud-5::before,
+.cloud-5::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-5::before {
+  width: 80px;
+  height: 80px;
+  top: -30px;
+  left: 40px;
+}
+
+.cloud-5::after {
+  width: 100px;
+  height: 100px;
+  top: -10px;
+  left: 70px;
+}
+
+
+/* Keyframes para la animación de las nubes */
+@keyframes floatCloud {
+  0% {
+    transform: translateX(0) scale(var(--cloud-scale, 1));
+  }
+
+  100% {
+    transform: translateX(calc(100vw + 200px)) scale(var(--cloud-scale, 1));
+    /* Cruza toda la pantalla */
+  }
+}
+
+/* Media queries para escalar las nubes en pantallas más grandes */
+@media (min-width: 640px) {
+
+  /* sm */
+  .cloud-1 {
+    width: 200px;
+    height: 120px;
+  }
+
+  .cloud-2 {
+    width: 250px;
+    height: 150px;
+  }
+
+  .cloud-3 {
+    width: 150px;
+    height: 90px;
+  }
+
+  .cloud-4 {
+    width: 220px;
+    height: 130px;
+  }
+
+  .cloud-5 {
+    width: 200px;
+    height: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  /* md */
+  .cloud-1 {
+    width: 250px;
+    height: 150px;
+  }
+
+  .cloud-2 {
+    width: 300px;
+    height: 180px;
+  }
+
+  .cloud-3 {
+    width: 180px;
+    height: 110px;
+  }
+
+  .cloud-4 {
+    width: 270px;
+    height: 160px;
+  }
+
+  .cloud-5 {
+    width: 240px;
+    height: 140px;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  /* lg */
+  .cloud-1 {
+    width: 300px;
+    height: 180px;
+  }
+
+  .cloud-2 {
+    width: 350px;
+    height: 210px;
+  }
+
+  .cloud-3 {
+    width: 200px;
+    height: 120px;
+  }
+
+  .cloud-4 {
+    width: 320px;
+    height: 190px;
+  }
+
+  .cloud-5 {
+    width: 280px;
+    height: 160px;
+  }
+}
+
+/* Opcional: Para una mejor animación de entrada, si no las tienes ya */
+.animate-fade-in-down {
+  animation: fade-in-down 0.8s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+  animation-delay: 0.4s;
+}
+
+.animate-fade-in-late {
+  animation: fade-in 0.8s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+.animate-fade-in-down-slow {
+  animation: fade-in-down-slow 1.5s ease-out forwards;
+}
