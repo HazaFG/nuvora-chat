@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
 import Spinner from './Spinner';
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from 'sonner';
+
 
 interface UserData {
   id: number
@@ -26,6 +29,16 @@ export const User = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
+    const userId = Cookies.get('userId');
+
+    if (!userId) {
+      setLoading(false);
+      setError(new Error("Inicia sesion prro"));
+      return;
+    }
+  })
+
+    useEffect(() => {
     const userId = Cookies.get('userId');
 
     if (!userId) {
@@ -60,7 +73,7 @@ export const User = () => {
 
     fetchUser()
   }, [])
-
+/*
   if (loading) {
     return <Spinner />; // Se retorna el Spinner directamente, ocupando toda la pantalla
   }
@@ -72,7 +85,7 @@ export const User = () => {
 
   if (!user) {
     return <div className="text-center mt-16">No se encontró información del usuario.</div>
-  }
+  }*/
 
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -190,27 +203,31 @@ export const User = () => {
     handleUserUpdate(requestOptions);
   }
 
-  async function handleUserUpdate(requestOptions: RequestInit) {
-    try {
-      const response = await fetch(`http://localhost:3000/api/users/update/${user.id}`, requestOptions);
-      const json = await response.json();
+  async function handleUserUpdate(requestOptions: RequestInit){
+      try{
+        const response = await fetch(`http://localhost:3000/api/users/update/${user?.id}`, requestOptions)
+        const json = await response.json()
 
-      if (!response.ok) {
-        setFormError(json.message || "Error desconocido al actualizar.");
-        return;
-      } else {
-        Cookies.set('name', user.name, { expires: 7, path: '/' });
+        if(!response.ok){
+          setFormError(new Error(json.message || "Error al Actualizar"))
+          toast.error(json.message || "No se pudo Actualizar")
+          return;
+        }
+        
+        Cookies.set('name', user?.name, {expires: 7, path: '/'})
 
-        location.reload();
+        toast.success("Informacion actualizada correctamente")
+
+        setTimeout(() => {
+          location.reload()
+        }, 3000)
+      } catch (e: any){
+        console.error("Error en la peticion de actualizacion", e)
+        setFormError(new Error(e.message || "Error de Red al Actualizar"))
+        toast.error("Error al actualizar datos")
       }
-    } catch (e: any) {
-      console.error("Error en la petición de actualización:", e);
-      setFormError(e.message || "Error de red al actualizar.");
     }
-  }
-
-
-
+    
   return (
     <div className="p-4 sm:ml-64">
       <div className="profile-container relative max-w-md mx-auto md:max-w-2xl mt-6 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl mt-16">
@@ -219,7 +236,7 @@ export const User = () => {
             <div className="w-full flex justify-center">
               <div className="relative group">
                 <img
-                  src={`data:image/jpg;base64,${user.profile_picture}` || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
+                  src={`data:image/jpg;base64,${user?.profile_picture}` || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
                   className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-18 max-w-[150px] object-cover w-[150px] h-[150px]"
                   alt="Profile"
                   id="profile-picture-display"
@@ -264,14 +281,14 @@ export const User = () => {
                     type="text"
                     name="name"
                     onChange={(e) => { setUser({ ...user, name: e.target.value }) }}
-                    placeholder={user.name}
+                    placeholder={user?.name}
                     className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <input
                     type="email"
                     name="email"
                     onChange={(e) => { setUser({ ...user, email: e.target.value }) }}
-                    placeholder={user.email}
+                    placeholder={user?.email}
                     className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <p className='flex align-left text-user'>Editar contraseña</p>

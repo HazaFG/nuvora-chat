@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export const CreateRoom = () => {
   const [roomName, setRoomName] = useState<string>('');
@@ -118,7 +119,8 @@ export const CreateRoom = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error al crear la sala.');
+        toast.error("Error Al Crear Sala")
+        return 
       }
 
       setFormError(null);
@@ -128,6 +130,7 @@ export const CreateRoom = () => {
       setPreviewImage(null);
       
       console.log('Sala creada correctamente.');
+      toast.success("Se Creo la Sala Correctamente")
 
       if (data.roomId) {
         router.push(`/dashboard/rooms/${data.roomId}`); //el result que me traigo de la consulta en backend, no se si funcione 
