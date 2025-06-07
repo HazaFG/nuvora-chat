@@ -14,14 +14,6 @@ import Link from 'next/link'
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
 
-
-// const roomItems = [
-//   {
-//
-//   }
-// ]
-
-
 //Aqui vamos a traernos en forma de arreglo todo nuestos elementos de SideBarMenuItem
 const menuItems = [
   // {
@@ -116,7 +108,7 @@ export const Sidebar = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         type="button"
-        className="z-99 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        className="z-99 inline-flex items-center p-4 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
       >
         <span className="sr-only">Open sidebar</span>
         <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
@@ -141,7 +133,7 @@ export const Sidebar = () => {
           }}
         >
           {/*Esta cosa es la parte donde esta todo el texto de flowbite*/}
-          <div className="flex items-center ps-2.5 mb-5">
+          <div className="flex items-center ps-2.5 mb-2">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"

@@ -130,7 +130,9 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       }
 
       toast.success(data.message || 'Has salido de la sala correctamente.');
-      router.push('/dashboard/rooms');
+      window.location.href = `/dashboard/rooms`;
+
+      // router.push('/dashboard/rooms');
 
     } catch (error: any) {
       console.error('Error al salir de la sala:', error);

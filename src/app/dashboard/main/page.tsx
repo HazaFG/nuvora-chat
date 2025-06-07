@@ -1,11 +1,8 @@
-// Si estás usando React, asegúrate de importar 'React' si es necesario
-// import React from 'react';
+import Link from "next/link";
 
 export default function MainPage() {
   return (
     <>
-      {/* Contenedor principal con todas las variables CSS y estilos Tailwind */}
-      {/* Las variables se definen directamente en el className usando corchetes */}
       <div className="
         p-4 sm:ml-64 min-h-screen flex flex-col items-center justify-between relative overflow-hidden
         text-white
@@ -40,7 +37,7 @@ export default function MainPage() {
 
 
         {/* Contenido principal (imagen y texto de bienvenida) */}
-        <div className="flex flex-col items-center justify-center flex-grow z-10">
+        <div className="flex flex-col mb-32 items-center justify-center flex-grow z-10">
           <div className="mb-8 sm:mt-0">
             <img
               src="/cloudWhite.png"
@@ -58,9 +55,16 @@ export default function MainPage() {
                           leading-relaxed animate-fade-in-up">
               Conversaciones en tiempo real. Conexión sin límites.
             </p>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl animate-fade-in">
-              Diseñada para equipos, amigos y todos los que quieran estar conectados.
-            </p>
+
+
+            <Link href={'/dashboard/rooms'} className="
+                mt-8 px-8 py-3 rounded-full text-lg font-semibold
+                bg-[#47A6F9] hover:bg-blue-700
+                transition-colors duration-300 ease-in-out
+                shadow-lg animate-fade-in-late-fast
+              ">
+              Comenzar
+            </Link>
           </div>
         </div>
 
