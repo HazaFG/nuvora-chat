@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export const CreateRoom = () => {
+  const MAX_SUMMARY = 25
   const [roomName, setRoomName] = useState<string>('');
   const [roomSummary, setRoomSummary] = useState<string>('');
   const [roomImageBase64, setRoomImageBase64] = useState<string | null>(null);
@@ -95,11 +96,27 @@ export const CreateRoom = () => {
     setFormError(null);
     setLoading(true);
 
+    if (roomSummary.length > MAX_SUMMARY) {
+      setLoading(false);
+      toast.error(`La descripción no puece tener más de ${MAX_SUMMARY} carácteres`)
+      return
+    }
+
+
+
     if (!roomName.trim()) {
-      setFormError("El nombre de la sala es obligatorio.");
+      // setFormError("El nombre de la sala es obligatorio.");
+      toast.error("El nombre de la sala es obligatorio.")
       setLoading(false);
       return;
     }
+
+    if (!roomSummary) {
+      setLoading(false);
+      toast.error("La descripcion de la sala es obligatoria")
+      return
+    }
+
 
     const roomData = {
       name: roomName,
@@ -192,7 +209,7 @@ export const CreateRoom = () => {
           </div>
 
           {formError && <span className="text-red-500 text-sm mt-2 block">{formError}</span>}
-          {loading && <Spinner />}
+          {loading ? <Spinner /> : ""}
 
           <form onSubmit={handleSubmit} className="mt-6 py-6 border-t border-slate-200 text-center">
             <div className="flex flex-wrap justify-center">
@@ -215,7 +232,7 @@ export const CreateRoom = () => {
                     rows={3}
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   ></textarea>
-
+                  {roomSummary.length + '/' + MAX_SUMMARY}
                 </div>
 
                 <button
