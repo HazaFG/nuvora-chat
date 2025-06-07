@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Spinner from "./Spinner";
 import { SidebarRoomItem } from "./SidebarRoomItem";
+import Link from 'next/link'
 
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
@@ -153,7 +154,7 @@ export const Sidebar = () => {
             </button>
 
             <Image src="/cloudWhite.png" width={40} height={20} className="me-3" alt="Flowbite Logo" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap font-madimi" style={{ color: 'var(--sidebar-text)' }}>Nuvora chat</span>
+            <Link href={'/dashboard/main'} className="self-center text-2xl font-semibold whitespace-nowrap font-madimi" style={{ color: 'var(--sidebar-text)' }}>Nuvora chat</Link>
           </div>
 
           <div className="mt-8" style={{ color: 'var(--sidebar-text)' }}>

@@ -2,9 +2,10 @@ export default function MainPage() {
   return (
     <>
       <div className="p-4 sm:ml-64 min-h-screen flex flex-col items-center justify-center relative overflow-hidden
-                      bg-gradient-to-br from-[#0C4A9D] to-[#47A6F9] text-white">
+                      bg-[var(--welcome-gradient-from)] to-[var(--welcome-gradient-to)] bg-gradient-to-br text-white">
 
         {/* Contenedor de las nubes animadas */}
+        {/* Las nubes tienen su color definido en CSS con var(--cloud-color) */}
         <div className="animated-clouds">
           <div className="cloud cloud-1"></div>
           <div className="cloud cloud-2"></div>
@@ -13,7 +14,11 @@ export default function MainPage() {
           <div className="cloud cloud-5"></div>
         </div>
 
-        <div className="mb-8 mt-4 sm:mt-0 z-10"> {/* Añadimos z-10 para asegurar que la imagen esté sobre las nubes */}
+        {/* Contenedor de las estrellas animadas (solo visible en modo oscuro) */}
+        <div className="animated-stars"></div>
+
+
+        <div className="mb-8 mt-4 sm:mt-0 z-10">
           <img
             src="/cloudWhite.png"
             alt="Nuvora Chat Cloud Icon"
@@ -21,7 +26,7 @@ export default function MainPage() {
           />
         </div>
 
-        <div className="text-center px-4 z-10"> {/* Añadimos z-10 para asegurar que el texto esté sobre las nubes */}
+        <div className="text-center px-4 z-10">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4
                          leading-tight animate-fade-in-down">
             ¡Bienvenido a <span className="font-madimi">Nuvora Chat!</span>
