@@ -69,7 +69,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
   const inputRef = useRef<HTMLInputElement | null>(null); //pos de selector
 
-  async function fetch_room(roomId: string, userId: string) {
+  async function fetchRoom(roomId: string, userId: string) {
     const response = await fetch(`http://localhost:3000/api/rooms/${roomId}?user_id=${userId}`)
     // TODO: navigate to general chat or idunno
     if (!response.ok) {
@@ -80,8 +80,9 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   }
 
   useEffect(() => {
+    fetchEmojis();
     const userIdCookie = Cookies.get('userId');
-    fetch_room(roomId, userIdCookie || "")
+    fetchRoom(roomId, userIdCookie || "")
   }, [])
 
   //cargar los datos del usuario desde las cookies
@@ -386,8 +387,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
                   <div className="my-2 max-w-full">
                     <MediaDisplay
                       media={msg.media}
-                      mimeType={msg.mime_type}
-                      className="h-auto object-contain"
+                      mimeType={msg.mimeType}
                     />
                   </div>
                 )}
