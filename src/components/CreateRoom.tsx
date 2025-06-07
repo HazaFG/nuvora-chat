@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import Cookies from 'js-cookie';
 
 export const CreateRoom = () => {
   const MAX_SUMMARY = 25
@@ -63,6 +64,42 @@ export const CreateRoom = () => {
       reader.onerror = (err) => reject(new Error("Error al leer el archivo."));
     });
   };
+
+  const handleJoinRoom = async (roomId: number) => {
+    const currentUserId = Cookies.get('userId');
+    if (currentUserId === null) {
+      alert('Error: ID de usuario no disponible. Asegúrate de haber iniciado sesión.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/api/rooms/join-room', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get('authToken')}`,
+        },
+        body: JSON.stringify({
+          userId: currentUserId,
+          roomId: roomId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al unirse a la sala.');
+      }
+
+      const result = await response.json();
+      console.log('Unido a la sala con éxito:', result)
+      window.location.href = `/dashboard/rooms/${roomId}`;
+
+    } catch (error: any) {
+      console.error('Hubo un error al intentar unirse a la sala:', error.message);
+      alert(`Error al unirse a la sala: ${error.message}`);
+    }
+  };
+
 
   // Manejador para el cambio del input de archivo
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,7 +196,8 @@ export const CreateRoom = () => {
       toast.success("Se Creo la Sala Correctamente")
 
       if (data.roomId) {
-        router.push(`/dashboard/rooms/${data.roomId}`); //el result que me traigo de la consulta en backend, no se si funcione 
+        handleJoinRoom(data.roomId)
+        //router.push(`/dashboard/rooms/${data.roomId}`); el result que me traigo de la consulta en backend, no se si funcione 
       } else {
         router.push('/dashboard'); //fallback si por alguna razon falla :'v
       }
