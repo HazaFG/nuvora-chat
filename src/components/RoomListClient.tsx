@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter, redirect } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 interface Room {
@@ -54,8 +54,8 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
       }
 
       const result = await response.json();
-      console.log('Unido a la sala con éxito:', result);
-      router.push(`/dashboard/rooms/${roomId}`);
+      console.log('Unido a la sala con éxito:', result)
+      window.location.href = `/dashboard/rooms/${roomId}`;
 
     } catch (error: any) {
       console.error('Hubo un error al intentar unirse a la sala:', error.message);
