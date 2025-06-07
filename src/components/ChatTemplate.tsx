@@ -6,9 +6,18 @@ import io, { Socket } from 'socket.io-client';
 import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
 import Spinner from './Spinner';
+import { useRouter } from 'next/navigation';
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
 const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY;
+
+interface Room {
+  id: number
+  name: string | null
+  summary: string | null
+  image: string | null
+  timestamp: string | null
+}
 
 interface Message {
   id: number;
@@ -37,6 +46,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   const [input, setInput] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [messagesLength, setMessagesLength] = useState<number>(Infinity);
+  const router = useRouter()
 
   // Referencia para hacer scroll automático al final de los mensajes
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -55,8 +65,24 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   const [emojis, setEmojis] = useState<Emoji[]>([]); //almacena
   const [groupedEmojis, setGroupedEmojis] = useState<{ [key: string]: Emoji[] }>({}); //agrupados por categorias
   const [emojiError, setEmojiError] = useState<string | null>(null); //errores
+  const [room, setRoom] = useState<Room>()
 
   const inputRef = useRef<HTMLInputElement | null>(null); //pos de selector
+
+  async function fetch_room(roomId: string, userId: string) {
+    const response = await fetch(`http://localhost:3000/api/rooms/${roomId}?user_id=${userId}`)
+    // TODO: navigate to general chat or idunno
+    if (!response.ok) {
+      router.push("/dashboard/main")
+    }
+    const json = await response.json()
+    setRoom(json.room)
+  }
+
+  useEffect(() => {
+    const userIdCookie = Cookies.get('userId');
+    fetch_room(roomId, userIdCookie || "")
+  }, [])
 
   //cargar los datos del usuario desde las cookies
   useEffect(() => {
@@ -305,7 +331,14 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
   return (
     <div className="chat-container">
-      <div className="chat-header">Sala General</div>
+      <div className="chat-header">
+        Sala {room?.name}
+        <img
+          src={(room?.image) ? `data:image/png;base64,${room.image}` : '/cloudWhite.png'}
+          alt="Logo"
+          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+        />
+      </div>
 
       {errorConexion && (
         <div className="text-red-500 p-2 text-center">{errorConexion}</div>
