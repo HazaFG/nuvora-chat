@@ -362,7 +362,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
             >
               {msg.user_id !== currentUserData?.id && (
                 <img
-                  src={`data:image/jpg;base64,${msg.profilePicture}` || '/cloudWhite.png'}
+                  src={(msg.profilePicture) ? `data:image/jpg;base64,${msg.profilePicture}` : '/cloudWhite.png'}
                   alt="Perfil"
                   className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                 />
@@ -408,7 +408,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
               {msg.user_id === currentUserData?.id && (
                 <img
-                  src={`data:image/png;base64,${msg.profilePicture}` || '/cloudWhite.png'}
+                  src={(msg.profilePicture) ? `data:image/png;base64,${msg.profilePicture}` : '/cloudWhite.png'}
                   alt="Perfil"
                   className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                 />
