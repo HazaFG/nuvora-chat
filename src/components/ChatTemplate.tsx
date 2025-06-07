@@ -9,6 +9,18 @@ import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
 const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY;
 
@@ -81,30 +93,11 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     setRoom(json.room)
   }
 
-  async function checkUserRoomSituationship(roomId: string, userId: string) {
-    const response = await fetch(
-      `http://localhost:3000/api/rooms/user-rooms-situationship/${roomId}/${userId}`
-    )
-    // TODO: navigate to general chat or idunno
-    const json = await response.json()
-    if (!json.rooms.length) {
-      router.push("/dashboard/main")
-      toast.error("No te has unido a esta sala")
-      return
-    }
-  }
-
-
-  const handleLeaveRoom = async () => {
-    // Asegúrate de tener el userId y el roomId
+  const handleConfirmLeave = async () => {
     const userId = Cookies.get('userId');
+    
     if (!userId || !room?.id) {
       toast.error('Error: Faltan datos de usuario o de la sala para salir.');
-      return;
-    }
-
-    // Opcional: una confirmación antes de salir
-    if (!confirm(`¿Estás seguro de que quieres salir de "${room.name || 'esta sala'}"?`)) {
       return;
     }
 
@@ -124,12 +117,13 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       }
 
       toast.success(data.message || 'Has salido de la sala correctamente.');
-      // router.push('/dashboard/rooms');
-      window.location.href = `/dashboard/rooms`;
+      router.push('/dashboard/rooms'); 
 
     } catch (error: any) {
       console.error('Error al salir de la sala:', error);
       toast.error(error.message || 'Error en el servidor al salir de la sala.');
+    } finally {
+      //AlertDialogAction ya cierra el diálogo por defecto
     }
   };
 
@@ -137,7 +131,6 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     fetchEmojis();
     const userIdCookie = Cookies.get('userId');
     fetchRoom(roomId, userIdCookie || "")
-    checkUserRoomSituationship(roomId, userIdCookie || "")
   }, [])
 
   //cargar los datos del usuario desde las cookies
@@ -388,7 +381,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   return (
     <div className="chat-container">
       <div className="chat-header flex items-center justify-between p-4 space-x-2">
-
+        
         <div className="flex items-center space-x-2">
 
           <img
@@ -399,13 +392,32 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
           <span className="font-semibold text-lg">Sala {room?.name}</span>
         </div>
 
-        <button
-          onClick={handleLeaveRoom}
-          className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-          aria-label="Salir de la sala"
-        >
-          <IoLogOutOutline size={24} />
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            
+            <button
+              className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+              aria-label="Salir de la sala"
+            >
+              <IoLogOutOutline size={24} />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Estás seguro de que quieres salir?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción te sacará de la sala "{(room?.name || 'actual')}". Puedes unirte de nuevo en cualquier momento si lo deseas.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              {/* Cuando se haga clic en este botón, se ejecutará handleConfirmLeave */}
+              <AlertDialogAction onClick={handleConfirmLeave}>
+                Salir de la Sala
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
       </div>
 
