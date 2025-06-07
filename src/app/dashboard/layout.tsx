@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components";
 
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Sesion registrada",
@@ -17,6 +18,7 @@ export default function DashboardLayout({
       <main className="flex-1">
         {children}
       </main>
+      <Toaster />
     </>
   );
 }

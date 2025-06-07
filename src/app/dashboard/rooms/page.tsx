@@ -22,7 +22,10 @@ export default async function Rooms() {
                     alt="Logo"
                     className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                   />
-                  <span className="ms-3" style={{ color: 'var(--sidebar-text)' }}>{room.name}</span>
+                  <div className="flex flex-col">
+                    <span className="ms-3" style={{ color: 'var(--sidebar-text)' }}>{room.name}</span>
+                    <span className="ms-3 italic text-xs" style={{ color: 'var(--sidebar-text)' }}>{room.summary}</span>
+                  </div>
                 </Link>
               </li>)
             }
