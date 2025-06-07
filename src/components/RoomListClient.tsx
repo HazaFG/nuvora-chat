@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, redirect } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { toast } from 'sonner';
 
 interface Room {
   id: number;
@@ -57,9 +58,9 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
       console.log('Unido a la sala con éxito:', result)
       window.location.href = `/dashboard/rooms/${roomId}`;
 
-    } catch (error: any) {
-      console.error('Hubo un error al intentar unirse a la sala:', error.message);
-      alert(`Error al unirse a la sala: ${error.message}`);
+    } catch (e: any) {
+      console.error('Hubo un error al intentar unirse a la sala:', e.message);
+      toast.error('Error al intentar unirse a la sala.');
     }
   };
 
