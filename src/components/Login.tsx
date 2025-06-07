@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import Spinner from './Spinner';
+import { toast } from 'sonner';
 
 const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
 const BACKEND_LOGIN_URL = `${BACKEND_API_BASE_URL}/api/auth/login`;
@@ -23,7 +24,7 @@ export const Login = () => {
 
     // Validación básica del lado del cliente
     if (!email || !password) {
-      setError('Por favor, ingresa tu correo electrónico y contraseña.');
+      toast.error("Por favor, ingresa tu correo electrónico y contraseña")
       return;
     }
 
@@ -43,7 +44,7 @@ export const Login = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || 'Error al iniciar sesión. Inténtalo de nuevo.');
+        toast.error("Error al iniciar sesión. Inténtalo de nuevo")
         return;
       }
 

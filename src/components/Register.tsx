@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import Spinner from './Spinner';
+import { toast } from 'sonner';
 
 
 //url del backend
@@ -26,7 +27,7 @@ export const Register = () => {
     e.preventDefault();
 
     if (!name || !email || !password) {
-      setError('Por favor, completa todos los campos requeridos.');
+      toast.error("No se Rellenaron los Campos Necesarios")
       return;
     }
 
@@ -51,18 +52,18 @@ export const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || 'Error en el registro. Inténtalo de nuevo.');
+        toast.error("Error al Crear Usuario")
         return;
       }
 
-      setSuccess(data.message || '¡Registro exitoso! Redirigiendo a iniciar sesión...');
+      toast.success("Registro Creado Exitosamente")
       setTimeout(() => {
         router.push('/login');
       }, 0);
 
     } catch (err) {
       console.error('Error al conectar con el servidor:', err);
-      setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando.');
+      toast.error("No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando")
     } finally {
       setLoading(false);
     }
