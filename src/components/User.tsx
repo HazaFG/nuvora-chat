@@ -1,19 +1,15 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
-import Spinner from './Spinner';
-import { Toaster } from "@/components/ui/sonner"
 import { toast } from 'sonner';
 
-
 interface UserData {
-  id: number
-  name: string
-  email: string
-  password: string
-  confirm_password: string
-  profile_picture: string
-
+  id?: number
+  name?: string
+  email?: string
+  password?: string
+  confirm_password?: string
+  profile_picture?: string
 }
 
 interface ApiResponse {
@@ -23,27 +19,19 @@ interface ApiResponse {
 
 export const User = () => {
   const [user, setUser] = useState<UserData | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<Error | null>(null)
-  const [formError, setFormError] = useState<Error | null>(null)
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
     const userId = Cookies.get('userId');
 
     if (!userId) {
-      setLoading(false);
-      setError(new Error("Inicia sesion prro"));
       return;
     }
   })
 
-    useEffect(() => {
+  useEffect(() => {
     const userId = Cookies.get('userId');
 
     if (!userId) {
-      setLoading(false);
-      setError(new Error("Inicia sesion prro"));
       return;
     }
 
@@ -58,34 +46,27 @@ export const User = () => {
         const data: ApiResponse = await response.json()
         setUser(data.user)
 
-        if (data.user.profile_picture) {
-          setPreviewImage(`data:image/jpeg;base64,${data.user.profile_picture}`);
-        } else {
-          setPreviewImage("https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg");
-        }
 
       } catch (e: any) {
-        setError(e as Error)
-      } finally {
-        setLoading(false)
+        toast.error("Error al actualizar datos")
       }
     }
 
     fetchUser()
   }, [])
-/*
-  if (loading) {
-    return <Spinner />; // Se retorna el Spinner directamente, ocupando toda la pantalla
-  }
-
-  if (error) {
-    return <div className="text-center mt-16 text-red-500">Error al cargar el usuario: {error.message}</div>
-  }
-
-
-  if (!user) {
-    return <div className="text-center mt-16">No se encontró información del usuario.</div>
-  }*/
+  /*
+    if (loading) {
+      return <Spinner />; // Se retorna el Spinner directamente, ocupando toda la pantalla
+    }
+  
+    if (error) {
+      return <div className="text-center mt-16 text-red-500">Error al cargar el usuario: {error.message}</div>
+    }
+  
+  
+    if (!user) {
+      return <div className="text-center mt-16">No se encontró información del usuario.</div>
+    }*/
 
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -141,13 +122,16 @@ export const User = () => {
 
   //cambio del input de archivo
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!user) {
+      return
+    }
+
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-      setFormError(null); // Limpia errores anteriores
 
       const MAX_ORIGINAL_FILE_SIZE_MB = 5;
       if (file.size > MAX_ORIGINAL_FILE_SIZE_MB * 1024 * 1024) {
-        setFormError(`El archivo original es demasiado grande. Debe ser menor de ${MAX_ORIGINAL_FILE_SIZE_MB}MB.`);
+        toast.error(`El archivo original es demasiado grande. Debe ser menor de ${MAX_ORIGINAL_FILE_SIZE_MB}MB.`)
         return;
       }
 
@@ -158,26 +142,24 @@ export const User = () => {
         setUser(prevUser => prevUser ? { ...prevUser, profile_picture: compressedBase64 } : null);
 
         //upd previsualizacion con el Base64 comprimido (con prefijo para display)
-        setPreviewImage(`data:image/jpeg;base64,${compressedBase64}`);
-
       } catch (err: any) {
         console.error("Error al comprimir la imagen:", err);
-        setFormError(err.message || "Error al procesar la imagen para subir.");
+        toast.error(err.message || "Error al procesar la imagen para subir.")
       }
     } else {
-
       //si no se selecciona archivo pone img por defecto o la q tenia antes, opc como si no lo updteas
-      setPreviewImage(user.profile_picture ? `data:image/jpeg;base64,${user.profile_picture}` : "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg");
       setUser(prevUser => prevUser ? { ...prevUser, profile_picture: user.profile_picture } : null);
     }
   };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    if (!user) {
+      return
+    }
     e.preventDefault();
-    setFormError(null); // Limpiar errores antes de enviar
 
     if (user.password && user.password !== user.confirm_password) {
-      setFormError("Las contraseñas no coinciden.");
+      toast.error("Las contraseñas no coinciden.")
       return;
     }
 
@@ -203,31 +185,25 @@ export const User = () => {
     handleUserUpdate(requestOptions);
   }
 
-  async function handleUserUpdate(requestOptions: RequestInit){
-      try{
-        const response = await fetch(`http://localhost:3000/api/users/update/${user?.id}`, requestOptions)
-        const json = await response.json()
+  async function handleUserUpdate(requestOptions: RequestInit) {
+    try {
+      const response = await fetch(`http://localhost:3000/api/users/update/${user?.id}`, requestOptions)
+      const json = await response.json()
 
-        if(!response.ok){
-          setFormError(new Error(json.message || "Error al Actualizar"))
-          toast.error(json.message || "No se pudo Actualizar")
-          return;
-        }
-        
-        Cookies.set('name', user?.name, {expires: 7, path: '/'})
-
-        toast.success("Informacion actualizada correctamente")
-
-        setTimeout(() => {
-          location.reload()
-        }, 3000)
-      } catch (e: any){
-        console.error("Error en la peticion de actualizacion", e)
-        setFormError(new Error(e.message || "Error de Red al Actualizar"))
-        toast.error("Error al actualizar datos")
+      if (!response.ok) {
+        toast.error(json.message || "No se pudo Actualizar")
+        return;
       }
+
+      Cookies.set('name', user?.name || "NONAME", { expires: 7, path: '/' })
+
+      toast.success("Informacion actualizada correctamente")
+    } catch (e: any) {
+      console.error("Error en la peticion de actualizacion", e)
+      toast.error("Error en la peticion de actualizacion")
     }
-    
+  }
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="profile-container relative max-w-md mx-auto md:max-w-2xl mt-6 min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded-xl mt-16">
@@ -236,7 +212,7 @@ export const User = () => {
             <div className="w-full flex justify-center">
               <div className="relative group">
                 <img
-                  src={`data:image/jpg;base64,${user?.profile_picture}` || "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
+                  src={(user?.profile_picture) ? `data:image/jpg;base64,${user?.profile_picture}` : "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"}
                   className="shadow-xl rounded-full align-middle border-none absolute -m-16 -ml-20 lg:-ml-18 max-w-[150px] object-cover w-[150px] h-[150px]"
                   alt="Profile"
                   id="profile-picture-display"
@@ -271,7 +247,6 @@ export const User = () => {
             </div>
           </div>
 
-          {(formError) ? <span>{formError.message}</span> : ""}
           <form onSubmit={handleSubmit} className="mt-6 py-6 border-t border-slate-200 text-center">
             <div className="flex flex-wrap justify-center">
               <div className="w-full px-4">
