@@ -376,7 +376,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
               >
                 <span
                   className={`font-bold text-sm mb-1 ${msg.user_id === currentUserData?.id
-                    ? 'text-[#e3e3e3]'
+                    ? 'text-[var(--foreground)]'
                     : 'text-blue-600 dark:text-blue-300'
                     }`}
                 >
