@@ -8,8 +8,8 @@ import { toast } from 'sonner';
 export const CreateRoom = () => {
   const [roomName, setRoomName] = useState<string>('');
   const [roomSummary, setRoomSummary] = useState<string>('');
-  const [roomImageBase64, setRoomImageBase64] = useState<string | null>(null); 
-  const [previewImage, setPreviewImage] = useState<string | null>(null); 
+  const [roomImageBase64, setRoomImageBase64] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -43,7 +43,7 @@ export const CreateRoom = () => {
               height = MAX_HEIGHT;
             }
           }
-          
+
           canvas.width = width;
           canvas.height = height;
 
@@ -79,7 +79,7 @@ export const CreateRoom = () => {
         const compressedBase64 = await compressImage(file);
         setRoomImageBase64(compressedBase64); //guarda la Base64 limpia para enviar
         setPreviewImage(`data:image/jpeg;base64,${compressedBase64}`); //para la previsualizacion
-        
+
       } catch (err: any) {
         console.error("Error al comprimir la imagen:", err);
         setFormError(err.message || "Error al procesar la imagen para subir.");
@@ -108,19 +108,19 @@ export const CreateRoom = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/rooms/create-room', { 
+      const response = await fetch('http://localhost:3000/api/rooms/create-room', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(roomData), 
+        body: JSON.stringify(roomData),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
         toast.error("Error Al Crear Sala")
-        return 
+        return
       }
 
       setFormError(null);
@@ -128,7 +128,7 @@ export const CreateRoom = () => {
       setRoomSummary('');
       setRoomImageBase64(null);
       setPreviewImage(null);
-      
+
       console.log('Sala creada correctamente.');
       toast.success("Se Creo la Sala Correctamente")
 
@@ -141,6 +141,7 @@ export const CreateRoom = () => {
     } catch (e: any) {
       console.error('Error al crear la sala:', e);
       setFormError(e.message || 'Error en el servidor al crear la sala.');
+      toast.error("Error en el servidor al crear la sala.")
     } finally {
       setLoading(false);
     }
