@@ -332,13 +332,13 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
   return (
     <div className="chat-container">
-      <div className="chat-header">
-        Sala {room?.name}
+      <div className="chat-header flex items-center space-x-2">
         <img
           src={(room?.image) ? `data:image/png;base64,${room.image}` : '/cloudWhite.png'}
           alt="Logo"
           className="w-10 h-10 rounded-full object-cover flex-shrink-0"
         />
+        <span className="font-semibold text-lg">Sala {room?.name}</span>
       </div>
 
       {errorConexion && (
