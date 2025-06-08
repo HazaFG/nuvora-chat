@@ -16,8 +16,7 @@ export const Register = () => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [profilePicture, setProfilePicture] = useState<string>('');
-  const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
+  const [profilePicture] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -48,8 +47,6 @@ export const Register = () => {
           profile_picture: profilePicture || undefined,
         }),
       });
-
-      const data = await response.json();
 
       if (!response.ok) {
         toast.error("Error al Crear Usuario")
