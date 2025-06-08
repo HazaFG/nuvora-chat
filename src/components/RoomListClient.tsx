@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { toast } from 'sonner';
 
