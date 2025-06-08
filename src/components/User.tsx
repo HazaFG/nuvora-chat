@@ -8,6 +8,7 @@ interface UserData {
   name?: string
   email?: string
   profile_picture?: string
+  password?: string // Added password field for potential update
 }
 
 interface ApiResponse {
@@ -19,6 +20,12 @@ export const User = () => {
   const [user, setUser] = useState<UserData | null>(null)
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
+
+  // Validar si las contraseñas coinciden o si están vacías cuando una de ellas está llena
+  const passwordsMatch = newPassword === confirmNewPassword;
+  const isPasswordSectionActive = newPassword !== '' || confirmNewPassword !== '';
+  const isEditButtonDisabled = isPasswordSectionActive && !passwordsMatch;
+
 
   useEffect(() => {
     const userId = Cookies.get('userId');
@@ -55,19 +62,6 @@ export const User = () => {
 
     fetchUser()
   }, [])
-  /*
-    if (loading) {
-      return <Spinner />; // Se retorna el Spinner directamente, ocupando toda la pantalla
-    }
-  
-    if (error) {
-      return <div className="text-center mt-16 text-red-500">Error al cargar el usuario: {error.message}</div>
-    }
-  
-  
-    if (!user) {
-      return <div className="text-center mt-16">No se encontró información del usuario.</div>
-    }*/
 
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -272,22 +266,23 @@ export const User = () => {
                     name="name"
                     onChange={(e) => { setUser({ ...user, name: e.target.value }) }}
                     placeholder={user?.name}
-                    className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <input
                     type="email"
                     name="email"
                     onChange={(e) => { setUser({ ...user, email: e.target.value }) }}
                     placeholder={user?.email}
-                    className="barras-texto-color w-full px-4 py-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                   />
                   <p className='flex align-left text-user'>Editar contraseña</p>
 
                   <input
                     type="password"
                     name="password"
-                    onChange={(e) => { setUser({ ...user, password: e.target.value }) }}
+                    onChange={(e) => setNewPassword(e.target.value)} // Updated to use setNewPassword
                     placeholder='Contraseña'
+                    value={newPassword} // Controlled component
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                     autoComplete="new-password"
                   />
@@ -295,17 +290,21 @@ export const User = () => {
                   <input
                     type="password"
                     name="confirmPassword"
-                    onChange={(e) => { setUser({ ...user, confirm_password: e.target.value }) }}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)} // Updated to use setConfirmNewPassword
                     placeholder="Confirmar contraseña"
+                    value={confirmNewPassword} // Controlled component
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
                     autoComplete="new-password"
                   />
-
+                  {!passwordsMatch && isPasswordSectionActive && (
+                    <p className="text-red-500 text-sm mt-1">Las contraseñas no coinciden.</p>
+                  )}
                 </div>
 
                 <button
                   type='submit'
-                  className="cursor-pointer barras-texto text-user mt-4 px-6 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition-colors mr-2"
+                  disabled={isEditButtonDisabled} // This is the key change
+                  className={`cursor-pointer barras-texto text-user mt-4 px-6 py-2 rounded-lg font-bold transition-colors mr-2 ${isEditButtonDisabled ? 'bg-gray-400 text-gray-700 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
                 >Editar información</button>
               </div>
             </div>
