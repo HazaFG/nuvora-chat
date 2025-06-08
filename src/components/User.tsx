@@ -54,8 +54,14 @@ export const User = () => {
         const data: ApiResponse = await response.json();
         setUser(data.user);
 
-      } catch (e: any) {
-        toast.error("Error al actualizar datos");
+      } catch (e: unknown) {
+        console.error("Error en la actualización de datos:", e);
+
+        if (e instanceof Error) {
+          toast.error(e.message || "Error al actualizar datos.");
+        } else {
+          toast.error("Error al actualizar datos.");
+        }
       }
     };
 
@@ -107,10 +113,10 @@ export const User = () => {
           resolve(cleanBase64); //base64 limpia
         };
 
-        img.onerror = (err) => reject(new Error("Error al comprimir."));
+        img.onerror = (e) => reject(new Error(`Error al comprimir, ${e}`));
       };
 
-      reader.onerror = (err) => reject(new Error("Error al leer el archivo."));
+      reader.onerror = (e) => reject(new Error(`Error al leer el archivo, ${e}`));
     });
   };
 
@@ -136,9 +142,14 @@ export const User = () => {
         setUser(prevUser => prevUser ? { ...prevUser, profile_picture: compressedBase64 } : null);
 
         //upd previsualizacion con el Base64 comprimido (con prefijo para display)
-      } catch (err: any) {
-        console.error("Error al comprimir la imagen:", err);
-        toast.error(err.message || "Error al procesar la imagen para subir.")
+      } catch (e: unknown) {
+        console.error("Error al comprimir la imagen:", e);
+
+        if (e instanceof Error) {
+          toast.error(e.message || "Error al procesar la imagen para subir.");
+        } else {
+          toast.error("Error al procesar la imagen para subir.");
+        }
       }
     } else {
       //si no se selecciona archivo pone img por defecto o la q tenia antes, opc como si no lo updteas
@@ -206,9 +217,10 @@ export const User = () => {
       setNewPassword('');
       setConfirmNewPassword('');
 
-    } catch (e: any) {
-      console.error("Error en la peticion de actualizacion", e)
-      toast.error("Error en la peticion de actualizacion")
+    } catch (e: unknown) {
+      console.error("Error en la peticion de actualizacion", e);
+
+      toast.error("Error en la peticion de actualizacion");
     }
   }
 
