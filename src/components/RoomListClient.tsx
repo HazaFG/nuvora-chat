@@ -11,12 +11,9 @@ interface Room {
   image?: string;
 }
 
-interface RoomListClientProps {
-  rooms: Room[];
-}
-
-export default function RoomListClient({ rooms: initialRooms }: RoomListClientProps) {
+export default function RoomListClient() {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [rooms, setRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     const userIdCookie = Cookies.get('userId');
@@ -27,6 +24,18 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
       // router.push('/login');
     }
   }, []);
+
+  async function fetchRooms() {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms`);
+    const json = await response.json();
+    const rooms = json.rooms;
+    setRooms(rooms)
+  }
+
+  useEffect(() => {
+    fetchRooms()
+  }, [])
+
 
   const handleJoinRoom = async (roomId: number) => {
     if (currentUserId === null) {
@@ -68,7 +77,7 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
 
   return (
     <ul className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-6 font-medium">
-      {initialRooms.map((room: Room) => (
+      {rooms.map((room: Room) => (
         <li key={`${room.name}-${room.id}`}>
           <div className="w-full p-6 bg-[var(--background)] rounded-xl shadow-lg flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left transition-all duration-300 hover:shadow-xl hover:border-gray-600">
             <div className="mb-5 sm:mb-0 sm:me-6 flex justify-center w-full sm:w-auto">
