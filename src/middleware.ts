@@ -11,9 +11,6 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  //Gracias gemini por esta linea
-  console.log([Middleware] Path: ${pathname}, Token: ${token ? 'Presente' : 'Ausente'}, Protected: ${isProtectedRoute});
-
   if (!token && isProtectedRoute) {
     if (!pathname.startsWith('/login') && !pathname.startsWith('/api/auth')) {
       const loginUrl = new URL('/login', request.url);
@@ -23,7 +20,6 @@ export async function middleware(request: NextRequest) {
   }
 
   if (token && (pathname.startsWith('/login') || pathname.startsWith('/register'))) {
-    console.log([Middleware] Redirigiendo a /dashboard/main desde ${pathname} (ya logueado));
     return NextResponse.redirect(new URL('/dashboard/main', request.url));
   }
 
