@@ -1,6 +1,6 @@
 "use client";
 
-import { IoChatboxEllipsesOutline, IoPersonCircleOutline, IoAddCircleOutline, IoTrashOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -76,9 +76,15 @@ export const SidebarRoomItem = () => {
 
         // Si la respuesta es exitosa pero rooms está vacío, data.rooms ya es []
         setJoinedRooms(data.rooms);
-      } catch (e: any) {
+      } catch (e: unknown) { 
         console.error('Error fetching joined rooms:', e);
-        setErrorRooms(e.message || 'No se pudieron cargar tus salas.');
+        
+        if (e instanceof Error) {
+          setErrorRooms(e.message || 'No se pudieron cargar tus salas.');
+        } else {
+          
+          setErrorRooms('Ocurrió un error inesperado al cargar tus salas.');
+        }
       } finally {
         setLoadingRooms(false);
       }
