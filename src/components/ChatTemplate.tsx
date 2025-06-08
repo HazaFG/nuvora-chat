@@ -69,7 +69,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   // Datos de autenticación 
   // TOFIX: Guarda el nombre de usuario en una coookie para poder guardarlo aqui
   const username = Cookies.get('name');
-  
+
   const [currentUserData, setCurrentUserData] = useState<{ id: number; name: string; token: string } | null>(null);
   const [loadingUserData, setLoadingUserData] = useState(true);
 
@@ -151,7 +151,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     const userIdCookie = Cookies.get('userId');
     fetchRoom(roomId, userIdCookie || "")
     checkUserRoomSituationship(roomId, userIdCookie || "")
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   //cargar los datos del usuario desde las cookies
   useEffect(() => {
@@ -278,7 +278,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     return () => {
       newSocket.disconnect();
     };
-  }, [loadingUserData, currentUserData]);
+  }, [loadingUserData, currentUserData, roomId, username]);
 
   // --- Lógica para Scroll Automático ---
   useEffect(() => {
@@ -439,7 +439,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
             <AlertDialogHeader>
               <AlertDialogTitle>¿Estás seguro de que quieres salir?</AlertDialogTitle>
               <AlertDialogDescription>
-                Esta acción te sacará de la sala "{(room?.name || 'actual')}". Puedes unirte de nuevo en cualquier momento si lo deseas.
+                Esta acción te sacará de la sala {(room?.name || 'actual')}. Puedes unirte de nuevo en cualquier momento si lo deseas.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -552,31 +552,31 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
         <div className="flex justify-between items-center gap-2 w-full order-2 sm:w-auto sm:order-none"> {/* order para móviles */}
           {/* Botón de adjuntar archivo */}
           <div className="flex items-center gap-2"> {/* <-- ENVOLVER BOTÓN Y TEXTO */}
-          <button
-            onClick={handleFileButtonClick}
-            className="chat-action-button text-2xl"
+            <button
+              onClick={handleFileButtonClick}
+              className="chat-action-button text-2xl"
+              disabled={!!errorConexion}
+              aria-label="Adjuntar archivo"
+            >
+              <IoAttachOutline />
+            </button>
+            {file && ( // <-- MOSTRAR EL NOMBRE DEL ARCHIVO SI 'file' EXISTE
+              <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[100px]">
+                {file.name}
+              </span>
+            )}
+          </div> {/* <-- FIN DEL CONTENEDOR */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) => {
+              if (e.target.files) {
+                setFile(e.target.files[0]);
+              }
+            }}
+            className="hidden-file-input"
             disabled={!!errorConexion}
-            aria-label="Adjuntar archivo"
-          >
-            <IoAttachOutline />
-          </button>
-          {file && ( // <-- MOSTRAR EL NOMBRE DEL ARCHIVO SI 'file' EXISTE
-            <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[100px]">
-              {file.name}
-            </span>
-          )}
-        </div> {/* <-- FIN DEL CONTENEDOR */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={(e) => {
-            if (e.target.files) {
-              setFile(e.target.files[0]);
-            }
-          }}
-          className="hidden-file-input"
-          disabled={!!errorConexion}
-        />
+          />
 
           {/* Botón de Emoji */}
           <button
