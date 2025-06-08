@@ -551,6 +551,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
         {/* Contenedor de botones */}
         <div className="flex justify-between items-center gap-2 w-full order-2 sm:w-auto sm:order-none"> {/* order para móviles */}
           {/* Botón de adjuntar archivo */}
+          <div className="flex items-center gap-2"> {/* <-- ENVOLVER BOTÓN Y TEXTO */}
           <button
             onClick={handleFileButtonClick}
             className="chat-action-button text-2xl"
@@ -559,17 +560,23 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
           >
             <IoAttachOutline />
           </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={(e) => {
-              if (e.target.files) {
-                setFile(e.target.files[0]);
-              }
-            }}
-            className="hidden-file-input"
-            disabled={!!errorConexion}
-          />
+          {file && ( // <-- MOSTRAR EL NOMBRE DEL ARCHIVO SI 'file' EXISTE
+            <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[100px]">
+              {file.name}
+            </span>
+          )}
+        </div> {/* <-- FIN DEL CONTENEDOR */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={(e) => {
+            if (e.target.files) {
+              setFile(e.target.files[0]);
+            }
+          }}
+          className="hidden-file-input"
+          disabled={!!errorConexion}
+        />
 
           {/* Botón de Emoji */}
           <button
