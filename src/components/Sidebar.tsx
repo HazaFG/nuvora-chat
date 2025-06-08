@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import Image from "next/image"
-import { IoChatboxEllipsesOutline, IoPersonCircleOutline, IoAddCircleOutline, IoTrashOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
+import { IoPersonCircleOutline, IoAddCircleOutline, IoTrashOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { SidebarMenuItem } from "./SidebarMenuItem";
 import { SidebarSessionItem } from "./SidebarSessionItem";
 import { useTheme } from '../hooks/useTheme';
@@ -92,9 +92,13 @@ export const Sidebar = () => {
         router.push('/login');
       }, 0);
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error al conectar con el servidor:', err);
-      setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando.');
+      if (err instanceof Error) {
+        setError(`No se pudo conectar con el servidor: ${err.message}.`);
+      } else {
+        setError('No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando.');
+      }
     } finally {
       setLoading(false);
     }
