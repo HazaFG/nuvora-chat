@@ -7,8 +7,6 @@ interface UserData {
   id?: number
   name?: string
   email?: string
-  password?: string
-  confirm_password?: string
   profile_picture?: string
 }
 
@@ -19,11 +17,14 @@ interface ApiResponse {
 
 export const User = () => {
   const [user, setUser] = useState<UserData | null>(null)
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
 
   useEffect(() => {
     const userId = Cookies.get('userId');
 
     if (!userId) {
+      toast.error("Inicia sesión.");
       return;
     }
   })
@@ -154,13 +155,24 @@ export const User = () => {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     if (!user) {
-      return
+      toast.error("Datos de usuario no disponibles.");
+      return;
     }
     e.preventDefault();
 
-    if (user.password && user.password !== user.confirm_password) {
-      toast.error("Las contraseñas no coinciden.")
-      return;
+    if (newPassword || confirmNewPassword) {
+      if (!newPassword || !confirmNewPassword) {
+        toast.error("Ambos campos de contraseña deben llenarse para cambiarla.");
+        return;
+      }
+      if (newPassword !== confirmNewPassword) {
+        toast.error("Las contraseñas no coinciden.");
+        return;
+      }
+      if (newPassword.length < 6) {
+        toast.error("La nueva contraseña debe tener al menos 6 caracteres.");
+        return;
+      }
     }
 
     const userDataToUpdate: Partial<UserData> = {
@@ -168,8 +180,8 @@ export const User = () => {
       email: user.email,
     };
 
-    if (user.password) {
-      userDataToUpdate.password = user.password;
+    if (newPassword) {
+      userDataToUpdate.password = newPassword;
     }
 
     if (user.profile_picture) {
@@ -188,16 +200,19 @@ export const User = () => {
   async function handleUserUpdate(requestOptions: RequestInit) {
     try {
       const response = await fetch(`http://localhost:3000/api/users/update/${user?.id}`, requestOptions)
-      const json = await response.json()
+      const jsonResponse = await response.json();
 
       if (!response.ok) {
-        toast.error(json.message || "No se pudo Actualizar")
-        return;
+        throw new Error(jsonResponse.message || "Error desconocido al actualizar.");
       }
 
-      Cookies.set('name', user?.name || "NONAME", { expires: 7, path: '/' })
+      Cookies.set('name', user?.name || "NONAME", { expires: 7, path: '/' });
 
-      toast.success("Informacion actualizada correctamente")
+      toast.success("Informacion actualizada correctamente.")
+
+      setNewPassword('');
+      setConfirmNewPassword('');
+
     } catch (e: any) {
       console.error("Error en la peticion de actualizacion", e)
       toast.error("Error en la peticion de actualizacion")
@@ -274,13 +289,16 @@ export const User = () => {
                     onChange={(e) => { setUser({ ...user, password: e.target.value }) }}
                     placeholder='Contraseña'
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    autoComplete="new-password"
                   />
+
                   <input
                     type="password"
                     name="confirmPassword"
                     onChange={(e) => { setUser({ ...user, confirm_password: e.target.value }) }}
                     placeholder="Confirmar contraseña"
                     className="barras-texto-color w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 barras-texto"
+                    autoComplete="new-password"
                   />
 
                 </div>
