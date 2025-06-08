@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useRouter, redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { toast } from 'sonner';
 
@@ -18,7 +18,6 @@ interface RoomListClientProps {
 
 export default function RoomListClient({ rooms: initialRooms }: RoomListClientProps) {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const userIdCookie = Cookies.get('userId');
@@ -58,9 +57,13 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
       console.log('Unido a la sala con éxito:', result)
       window.location.href = `/dashboard/rooms/${roomId}`;
 
-    } catch (e: any) {
-      // console.error('Hubo un error al intentar unirse a la sala:', e.message);
-      toast.error('Error al intentar unirse a la sala.');
+    } catch (e: unknown) {
+      console.error('Error capturado al intentar unirse a la sala:', e);
+      if (e instanceof Error) {
+        toast.error(`Error al intentar unirse a la sala: ${e.message}`);
+      } else {
+        toast.error('Error al intentar unirse a la sala.');
+      }
     }
   };
 
