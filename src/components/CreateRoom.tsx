@@ -59,9 +59,7 @@ export const CreateRoom = () => {
           const cleanBase64 = base64data.replace(/^data:image\/\w+;base64,/, '');
           resolve(cleanBase64);
         };
-        img.onerror = (err) => reject(new Error("Error al comprimir."));
       };
-      reader.onerror = (err) => reject(new Error("Error al leer el archivo."));
     });
   };
 
@@ -93,9 +91,14 @@ export const CreateRoom = () => {
       console.log('Unido a la sala con éxito:', result)
       window.location.href = `/dashboard/rooms/${roomId}`;
 
-    } catch (error: any) {
-      console.error('Hubo un error al intentar unirse a la sala:', error.message);
-      alert(`Error al unirse a la sala: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Hubo un error al intentar unirse a la sala:', error.message);
+        alert(`Error al unirse a la sala: ${error.message}`);
+      } else {
+        console.error('Hubo un error desconocido al intentar unirse a la sala:', error);
+        alert('Error desconocido al unirse a la sala.');
+      }
     }
   };
 
@@ -117,9 +120,17 @@ export const CreateRoom = () => {
         setRoomImageBase64(compressedBase64); //guarda la Base64 limpia para enviar
         setPreviewImage(`data:image/jpeg;base64,${compressedBase64}`); //para la previsualizacion
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error al comprimir la imagen:", err);
-        setFormError(err.message || "Error al procesar la imagen para subir.");
+        if (err instanceof Error) {
+          setFormError(err.message || "Error al procesar la imagen para subir ");
+        } else if (typeof err === 'string') {
+          // Si el error es un string, úsalo directamente
+          setFormError(err || "Error al procesar la imagen para subir ");
+        } else {
+          // Para cualquier otro tipo de error, proporciona un mensaje genérico
+          setFormError("Error desconocido al procesar la imagen.");
+        }
       }
     } else {
       setRoomImageBase64(null);
@@ -201,10 +212,19 @@ export const CreateRoom = () => {
         router.push('/dashboard'); //fallback si por alguna razon falla :'v
       }
 
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error('Error al crear la sala:', e);
-      setFormError(e.message || 'Error en el servidor al crear la sala.');
-      toast.error("Error en el servidor al crear la sala.")
+      if (e instanceof Error) { // Verifica si 'e' es una instancia de Error
+        setFormError(e.message || 'Error en el servidor al crear la sala.');
+        toast.error("Error en el servidor al crear la sala.")
+      } else if (typeof e === 'string') {
+        setFormError(e || 'Error en el servidor al crear la sala.');
+        toast.error("Error en el servidor al crear la sala.")
+      } else {
+        // Si el error es de un tipo desconocido
+        setFormError('Error desconocido al crear la sala.');
+        toast.error("Error desconocido al crear la sala.")
+      }
     } finally {
       setLoading(false);
     }
