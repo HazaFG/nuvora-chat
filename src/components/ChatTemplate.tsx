@@ -69,13 +69,13 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   // Datos de autenticación 
   // TOFIX: Guarda el nombre de usuario en una coookie para poder guardarlo aqui
   const username = Cookies.get('name');
-  const [token] = useState('123'); // dato para ser usado despues como id de user xd
+  
   const [currentUserData, setCurrentUserData] = useState<{ id: number; name: string; token: string } | null>(null);
   const [loadingUserData, setLoadingUserData] = useState(true);
 
   //estados para las fucniones de los emojis
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false); //selector
-  const [emojis, setEmojis] = useState<Emoji[]>([]); //almacena
+  //const [emojis, setEmojis] = useState<Emoji[]>([]); //almacena
   const [groupedEmojis, setGroupedEmojis] = useState<{ [key: string]: Emoji[] }>({}); //agrupados por categorias
   const [emojiError, setEmojiError] = useState<string | null>(null); //errores
   const [room, setRoom] = useState<Room>()
@@ -133,9 +133,14 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
       // router.push('/dashboard/rooms');
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al salir de la sala:', error);
-      toast.error(error.message || 'Error en el servidor al salir de la sala.');
+
+      if (error instanceof Error) {
+        toast.error(error.message || 'Error en el servidor al salir de la sala.');
+      } else {
+        toast.error('Ocurrió un error inesperado al salir de la sala.');
+      }
     } finally {
       //AlertDialogAction ya cierra el diálogo por defecto
     }
@@ -223,8 +228,16 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     });
 
     // Escucha el evento 'chat message' que viene del backend equis de
-    newSocket.on('chat message', (msg_wrapper: any, serverOffset: number) => {
-      const { msg, media, mime_type, user_id, name, timestamp, profile_picture } = msg_wrapper
+    newSocket.on('chat message', (msg_wrapper: {
+      msg: string;
+      media: string;
+      mime_type: string;
+      user_id: number;
+      name: string;
+      timestamp?: string;
+      profile_picture: string;
+    }, serverOffset: number) => {
+      const { msg, media, mime_type, user_id, name, timestamp, profile_picture } = msg_wrapper;
 
       // cache system idea 
       // the only problem is that i would require to also
@@ -257,7 +270,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
       // Actualiza el serverOffset en la autenticación del socket
       if (newSocket.auth) {
-        newSocket.auth.serverOffset = serverOffset;
+        (newSocket.auth as { serverOffset: number }).serverOffset = serverOffset;
       }
     });
 
@@ -292,7 +305,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       }
 
       const data: Emoji[] = await response.json();
-      setEmojis(data);
+      //setEmojis(data);
 
       //agruparlos por su propiedad 'group'
       const grouped: { [key: string]: Emoji[] } = data.reduce((acc, emoji) => {
@@ -307,9 +320,14 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
       setGroupedEmojis(grouped);
 
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Error fetching emojis:", e);
-      setEmojiError(e.message || "No se pudieron cargar los emojis.");
+
+      if (e instanceof Error) {
+        setEmojiError(e.message || "No se pudieron cargar los emojis.");
+      } else {
+        setEmojiError("Un error desconocido ocurrió al cargar los emojis.");
+      }
     }
   };
 
