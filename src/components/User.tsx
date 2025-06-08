@@ -45,7 +45,7 @@ export const User = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/users/${userId}`);
+        const response = await fetch(`https://nuvora-backend.onrender.com/api/users/${userId}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -203,7 +203,7 @@ export const User = () => {
 
   async function handleUserUpdate(requestOptions: RequestInit) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/users/update/${user?.id}`, requestOptions);
+      const response = await fetch(`https://nuvora-backend.onrender.com/api/users/update/${user?.id}`, requestOptions);
       const jsonResponse = await response.json();
 
       if (!response.ok) {

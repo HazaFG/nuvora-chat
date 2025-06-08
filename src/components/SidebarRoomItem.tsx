@@ -67,7 +67,7 @@ export const SidebarRoomItem = () => {
       setErrorRooms(null); // Resetear cualquier error anterior
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/user-rooms/${currentUserId}`);
+        const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/user-rooms/${currentUserId}`);
         const data = await response.json();
         if (!response.ok) {
           // Si la respuesta no es 200 OK, lanzamos un error

@@ -71,7 +71,7 @@ export const CreateRoom = () => {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/join-room`, {
+      const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/join-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ export const CreateRoom = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/create-room`, {
+      const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/create-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

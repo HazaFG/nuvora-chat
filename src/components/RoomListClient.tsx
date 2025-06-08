@@ -26,7 +26,7 @@ export default function RoomListClient() {
   }, []);
 
   async function fetchRooms() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms`);
+    const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms`);
     const json = await response.json();
     const rooms = json.rooms;
     setRooms(rooms)
@@ -44,7 +44,7 @@ export default function RoomListClient() {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/join-room`, {
+      const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/join-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
