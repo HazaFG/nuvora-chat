@@ -59,7 +59,7 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
       window.location.href = `/dashboard/rooms/${roomId}`;
 
     } catch (e: any) {
-      console.error('Hubo un error al intentar unirse a la sala:', e.message);
+      // console.error('Hubo un error al intentar unirse a la sala:', e.message);
       toast.error('Error al intentar unirse a la sala.');
     }
   };
