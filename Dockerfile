@@ -41,6 +41,11 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+ENV NEXT_PUBLIC_BACKEND_API_URL=https://nuvora-backend.onrender.com
+ENV NEXT_PUBLIC_WEBSOCKET_URL=https://nuvora-backend.onrender.com
+ENV NEXT_PUBLIC_EMOJI_API_KEY=c40293a8e3f65f51e7ffe6066723c49b7ba21f43
+
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
