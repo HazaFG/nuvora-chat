@@ -178,7 +178,7 @@ export const Sidebar = () => {
 
           {/*cambio de tema pedorro */}
           <button
-            onClick={toggleTheme}
+            onClick={typeof toggleTheme === 'function' ? toggleTheme : undefined}
             // Aplicamos las mismas clases que el Link, pero sin la lógica de "active"
             className="cursor-pointer flex p-2 mt-1 text-gray-900 rounded-lg dark:text-white group sidebar-menu-item-link w-full"
             style={{ color: 'var(--sidebar-text)' }}
