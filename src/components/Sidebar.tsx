@@ -11,7 +11,7 @@ import Spinner from "./Spinner";
 import { SidebarRoomItem } from "./SidebarRoomItem";
 import Link from 'next/link'
 
-const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
 
 //Aqui vamos a traernos en forma de arreglo todo nuestos elementos de SideBarMenuItem

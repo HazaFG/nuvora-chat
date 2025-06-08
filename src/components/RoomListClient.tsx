@@ -37,7 +37,7 @@ export default function RoomListClient({ rooms: initialRooms }: RoomListClientPr
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/rooms/join-room', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/join-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,11 +1,9 @@
 import RoomListClient from "@/components/RoomListClient";
 
 export default async function Rooms() {
-  const response = await fetch("http://localhost:3000/api/rooms");
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms`);
   const json = await response.json();
-  const rooms = json.rooms;
-
-  return (
+  const rooms = json.rooms; return (
     <>
       <div className="p-4 sm:ml-64 h-screen">
         <div className="h-full">

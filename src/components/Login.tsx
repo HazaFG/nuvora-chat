@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 import Spinner from './Spinner';
 import { toast } from 'sonner';
 
-const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_LOGIN_URL = `${BACKEND_API_BASE_URL}/api/auth/login`;
 
 export const Login = () => {

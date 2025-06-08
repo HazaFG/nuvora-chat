@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 
 //url del backend
-const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:3000';
+const BACKEND_API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_REGISTER_URL = `${BACKEND_API_BASE_URL}/api/auth/register`;
 
 export const Register = () => {

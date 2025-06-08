@@ -7,10 +7,10 @@ import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 interface Room {
-  id: number; 
+  id: number;
   name: string;
   summary: string;
-  image: string | null; 
+  image: string | null;
 }
 
 export const SidebarRoomItem = () => {
@@ -67,9 +67,8 @@ export const SidebarRoomItem = () => {
       setErrorRooms(null); // Resetear cualquier error anterior
 
       try {
-        const response = await fetch(`http://localhost:3000/api/rooms/user-rooms/${currentUserId}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/user-rooms/${currentUserId}`);
         const data = await response.json();
-
         if (!response.ok) {
           // Si la respuesta no es 200 OK, lanzamos un error
           throw new Error(data.message || 'Error al cargar las salas unidas.');

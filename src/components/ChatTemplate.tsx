@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://localhost:3000';
+const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 const emojiApiKey = process.env.NEXT_PUBLIC_EMOJI_API_KEY;
 
 interface Room {
@@ -83,8 +83,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   const inputRef = useRef<HTMLInputElement | null>(null); //pos de selector
 
   async function fetchRoom(roomId: string, userId: string) {
-    const response = await fetch(`http://localhost:3000/api/rooms/${roomId}?user_id=${userId}`)
-    // TODO: navigate to general chat or idunno
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/${roomId}?user_id=${userId}`);    // TODO: navigate to general chat or idunno
     if (!response.ok) {
       router.push("/dashboard/main")
       //return;
@@ -97,7 +96,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
 
 
   async function checkUserRoomSituationship(roomId: string, userId: string) {
-    const response = await fetch(`http://localhost:3000/api/rooms/user-rooms-situationship/${roomId}/${userId}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/user-rooms-situationship/${roomId}/${userId}`);
     const json = await response.json()
     if (!json.rooms.length) {
       router.push("/dashboard/main")
@@ -115,7 +114,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/rooms/leave-room', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/rooms/leave-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
