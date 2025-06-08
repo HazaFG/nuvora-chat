@@ -1,5 +1,10 @@
 "use client";
-export default function VideoPlayer(props: any) {
+
+interface VideoPlayerProps {
+  src: string;
+}
+
+export default function VideoPlayer(props: VideoPlayerProps) {
   const src = `data:video/mp4;base64,${props.src}`;
 
   return (
@@ -15,4 +20,3 @@ export default function VideoPlayer(props: any) {
     </div>
   );
 }
-
