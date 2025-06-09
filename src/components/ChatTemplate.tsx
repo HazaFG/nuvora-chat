@@ -351,18 +351,23 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   const handleSend = (): void => {
     const trimmed = input.trim();
 
-    //asegurarse de que el socket está conectado y tenemos los datos del usuario
+    if (trimmed === '' && !file) {
+      toast.warning("No se puede enviar un mensaje vacío sin un archivo adjunto.");
+      return;
+    }
+
+    // Asegurarse de que el socket está conectado y tenemos los datos del usuario
     if (!socketRef.current || !currentUserData || loadingUserData) {
       console.warn("No se puede enviar el mensaje: Socket no conectado, usuario no autenticado o cargando.");
       return;
     }
 
-    const { id, name } = currentUserData; //ID y nombre del usuario actual
+    const { id, name } = currentUserData; // ID y nombre del usuario actual
 
     const emitMessage = (mediaData: string | Uint8Array, mimeType: string) => {
       socketRef.current?.emit('send message', {
         media: mediaData,
-        msg: trimmed,
+        msg: trimmed, // Se envía el mensaje recortado
         mime_type: mimeType,
         name: name,
         user_id: id
@@ -378,7 +383,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       };
       reader.readAsArrayBuffer(file);
     } else {
-      emitMessage("", ""); // Para mensajes sin archivo
+      emitMessage("", "");
     }
 
     setInput('');
@@ -391,6 +396,7 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
       handleSend();
     }
   };
+
 
   const formatTime = (timestamp: string | undefined): string => {
     if (!timestamp) return '';
