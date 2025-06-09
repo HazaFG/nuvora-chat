@@ -13,18 +13,15 @@ interface Room {
   image: string | null;
 }
 
-export const SidebarRoomItem = () => {
-  // useState with explicit boolean type
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+const BACKEND_API_BASE_URL = "https://nuvora-backend.onrender.com";
 
-  // useRef with HTMLElement type for DOM elements, initialized to null
+export const SidebarRoomItem = () => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-
   const [joinedRooms, setJoinedRooms] = useState<Room[]>([]);
   const [loadingRooms, setLoadingRooms] = useState<boolean>(true);
   const [errorRooms, setErrorRooms] = useState<string | null>(null);
-
   const currentUserId = Cookies.get('userId');
 
   const toggleDropdown = () => {
@@ -45,13 +42,10 @@ export const SidebarRoomItem = () => {
       }
     };
 
-    // Add event listener for mousedown
-    //document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Clean up the event listener on component unmount
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
+  }, []);
 
   // Explicitly type the users array
   useEffect(() => {
@@ -67,7 +61,7 @@ export const SidebarRoomItem = () => {
       setErrorRooms(null); // Resetear cualquier error anterior
 
       try {
-        const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/user-rooms/${currentUserId}`);
+        const response = await fetch(`${BACKEND_API_BASE_URL}/api/rooms/user-rooms/${currentUserId}`);
         const data = await response.json();
         if (!response.ok) {
           // Si la respuesta no es 200 OK, lanzamos un error
@@ -76,13 +70,13 @@ export const SidebarRoomItem = () => {
 
         // Si la respuesta es exitosa pero rooms está vacío, data.rooms ya es []
         setJoinedRooms(data.rooms);
-      } catch (e: unknown) { 
+      } catch (e: unknown) {
         console.error('Error fetching joined rooms:', e);
-        
+
         if (e instanceof Error) {
           setErrorRooms(e.message || 'No se pudieron cargar tus salas.');
         } else {
-          
+
           setErrorRooms('Ocurrió un error inesperado al cargar tus salas.');
         }
       } finally {

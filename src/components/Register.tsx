@@ -116,50 +116,51 @@ export const Register = () => {
 
         </div> {/* FIN DEL NUEVO DIV */}
 
-        {/* El SVG de las nubes se mantiene fuera del nuevo div, porque es absoluto */}
-        <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden xl:hidden" style={{ height: '130px' }}>
-          <svg
-            viewBox="0 0 1440 130"
-            className="w-full h-full"
-            preserveAspectRatio="xMidYMid slice" // evita deformaciones
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Fondo degradado azul */}
-            <rect x="0" y="0" width="1440" height="130" fill="url(#bgGradient)" />
-
-            {/* Nubes traseras difusas */}
-            <g fill="#FFFFFF" fillOpacity="0.2">
-              <circle cx="100" cy="100" r="60" />
-              <circle cx="250" cy="110" r="70" />
-              <circle cx="400" cy="95" r="65" />
-              <circle cx="550" cy="105" r="80" />
-              <circle cx="700" cy="90" r="70" />
-              <circle cx="850" cy="110" r="75" />
-              <circle cx="1000" cy="95" r="65" />
-              <circle cx="1150" cy="105" r="80" />
-              <circle cx="1300" cy="100" r="70" />
-            </g>
-
-            <g fill="#FFFFFF" fillOpacity="0.1">
-              <circle cx="150" cy="115" r="60" />
-              <circle cx="300" cy="100" r="70" />
-              <circle cx="450" cy="110" r="60" />
-              <circle cx="600" cy="95" r="75" />
-              <circle cx="750" cy="105" r="65" />
-              <circle cx="900" cy="100" r="70" />
-              <circle cx="1050" cy="115" r="60" />
-              <circle cx="1200" cy="90" r="75" />
-              <circle cx="1350" cy="105" r="65" />
-            </g>
-
-            {/* Nubes frontales */}
-            <g fill="#FFFFFF">
-              {Array.from({ length: 11 }).map((_, i) => (
-                <circle key={i} cx={i * 144} cy="130" r="90" />
-              ))}
-            </g>
-          </svg>
-        </div>
+        {/* {/* El SVG de las nubes se mantiene fuera del nuevo div, porque es absoluto */}
+        {/* <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden xl:hidden" style={{ height: '130px' }}> */}
+        {/*   <svg */}
+        {/*     viewBox="0 0 1440 130" */}
+        {/*     className="w-full h-full" */}
+        {/*     preserveAspectRatio="xMidYMid slice" // evita deformaciones */}
+        {/*     xmlns="http://www.w3.org/2000/svg" */}
+        {/*   > */}
+        {/*     {/* Fondo degradado azul */}
+        {/*     <rect x="0" y="0" width="1440" height="130" fill="url(#bgGradient)" /> */}
+        {/**/}
+        {/*     {/* Nubes traseras difusas */}
+        {/*     <g fill="#FFFFFF" fillOpacity="0.2"> */}
+        {/*       <circle cx="100" cy="100" r="60" /> */}
+        {/*       <circle cx="250" cy="110" r="70" /> */}
+        {/*       <circle cx="400" cy="95" r="65" /> */}
+        {/*       <circle cx="550" cy="105" r="80" /> */}
+        {/*       <circle cx="700" cy="90" r="70" /> */}
+        {/*       <circle cx="850" cy="110" r="75" /> */}
+        {/*       <circle cx="1000" cy="95" r="65" /> */}
+        {/*       <circle cx="1150" cy="105" r="80" /> */}
+        {/*       <circle cx="1300" cy="100" r="70" /> */}
+        {/*     </g> */}
+        {/**/}
+        {/*     <g fill="#FFFFFF" fillOpacity="0.1"> */}
+        {/*       <circle cx="150" cy="115" r="60" /> */}
+        {/*       <circle cx="300" cy="100" r="70" /> */}
+        {/*       <circle cx="450" cy="110" r="60" /> */}
+        {/*       <circle cx="600" cy="95" r="75" /> */}
+        {/*       <circle cx="750" cy="105" r="65" /> */}
+        {/*       <circle cx="900" cy="100" r="70" /> */}
+        {/*       <circle cx="1050" cy="115" r="60" /> */}
+        {/*       <circle cx="1200" cy="90" r="75" /> */}
+        {/*       <circle cx="1350" cy="105" r="65" /> */}
+        {/*     </g> */}
+        {/**/}
+        {/*     {/* Nubes frontales */}
+        {/*     <g fill="#FFFFFF"> */}
+        {/*       {Array.from({ length: 11 }).map((_, i) => ( */}
+        {/*         <circle key={i} cx={i * 144} cy="130" r="90" /> */}
+        {/*       ))} */}
+        {/*     </g> */}
+        {/*   </svg> */}
+        {/* </div> */}
+        {/**/}
 
       </div> {/* FIN del Contenedor del Gradiente */}
 

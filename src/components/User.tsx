@@ -16,6 +16,8 @@ interface ApiResponse {
   user: UserData
 }
 
+const BACKEND_API_BASE_URL = "https://nuvora-backend.onrender.com";
+
 export const User = () => {
   const [user, setUser] = useState<UserData | null>(null)
   const [newPassword, setNewPassword] = useState<string>('');
@@ -45,7 +47,7 @@ export const User = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`https://nuvora-backend.onrender.com/api/users/${userId}`);
+        const response = await fetch(`${BACKEND_API_BASE_URL}/api/users/${userId}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -203,7 +205,7 @@ export const User = () => {
 
   async function handleUserUpdate(requestOptions: RequestInit) {
     try {
-      const response = await fetch(`https://nuvora-backend.onrender.com/api/users/update/${user?.id}`, requestOptions);
+      const response = await fetch(`${BACKEND_API_BASE_URL}/api/users/update/${user?.id}`, requestOptions);
       const jsonResponse = await response.json();
 
       if (!response.ok) {
