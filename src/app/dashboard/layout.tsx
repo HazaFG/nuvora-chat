@@ -3,8 +3,8 @@ import { Sidebar } from "@/components";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Sesion registrada",
+  title: "Nuvora Chat",
+  description: "Nuvora Chat | Conversaciones en Tiempo Real",
 };
 
 export default function DashboardLayout({

@@ -12,6 +12,7 @@ interface Room {
 }
 
 export default function RoomListClient() {
+  const BACKEND_API_BASE_URL = "https://nuvora-backend.onrender.com";
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -26,7 +27,7 @@ export default function RoomListClient() {
   }, []);
 
   async function fetchRooms() {
-    const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms`);
+    const response = await fetch(`${BACKEND_API_BASE_URL}/api/rooms`);
     const json = await response.json();
     const rooms = json.rooms;
     setRooms(rooms)
@@ -44,7 +45,7 @@ export default function RoomListClient() {
     }
 
     try {
-      const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/join-room`, {
+      const response = await fetch(`${BACKEND_API_BASE_URL}/api/rooms/join-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,10 +89,10 @@ export default function RoomListClient() {
               />
             </div>
             <div className="flex flex-col items-center sm:items-start flex-grow">
-              <h5 className="mb-2 text-2xl sm:text-3xl font-extrabold text-[var(--foreground)]">
+              <h5 className="mb-2 text-2xl sm:text-3xl font-bold text-[var(--foreground)]">
                 {room.name}
               </h5>
-              <p className="mb-6 text-base sm:text-lg text-gray-300 leading-relaxed line-clamp-3">
+              <p className="mb-6 text-base sm:text-lg text-[var(--foreground)] leading-relaxed line-clamp-3">
                 {room.summary}
               </p>
               <div className="w-full flex justify-center sm:justify-end mt-auto">

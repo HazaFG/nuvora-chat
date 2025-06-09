@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import Cookies from 'js-cookie';
 
 export const CreateRoom = () => {
+  const BACKEND_API_BASE_URL = "https://nuvora-backend.onrender.com";
   const MAX_SUMMARY = 25
   const [roomName, setRoomName] = useState<string>('');
   const [roomSummary, setRoomSummary] = useState<string>('');
@@ -71,7 +72,7 @@ export const CreateRoom = () => {
     }
 
     try {
-      const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/join-room`, {
+      const response = await fetch(`${BACKEND_API_BASE_URL}/api/rooms/join-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +182,7 @@ export const CreateRoom = () => {
     };
 
     try {
-      const response = await fetch(`https://nuvora-backend.onrender.com/api/rooms/create-room`, {
+      const response = await fetch(`${BACKEND_API_BASE_URL}/api/rooms/create-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

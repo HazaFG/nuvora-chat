@@ -50,8 +50,6 @@ export const Sidebar = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
   const sidebarRef = useRef<HTMLElement>(null);
-  const sidebarRoomItemRef = useRef<HTMLDivElement>(null); // con esta linea pedorra evitamos que se cierre el boton de los chats cuando se preionee
-
 
 
   const handleCerrarSesion = async () => {
@@ -104,22 +102,18 @@ export const Sidebar = () => {
     return { handleCerrarSesion, loading, error, success };
   }
 
+  //Esto es para cerrar los elementos del sidebar cuando alguien clickee en ellos
   useEffect(() => {
     const handleSidebarClick = (event: MouseEvent) => {
       const isSmallScreen = window.innerWidth < 768;
 
       if (isSmallScreen && sidebarRef.current && isOpen) {
         const target = event.target as HTMLElement;
-
-        if (sidebarRoomItemRef.current && sidebarRoomItemRef.current.contains(target)) {
-          return;
-        }
-
         const isLinkOrButton = target.closest('a') || target.closest('button');
-        const isMenuToggleButton = target.closest('button.sm\\:hidden');
+        const isMenuToggleButton = target.closest('button.sm\\:hidden') || target.closest('#dropdownUsersButton');
 
         if (isLinkOrButton && !isMenuToggleButton) {
-          setIsOpen(false);
+          setIsOpen(false); // Cierra el sidebar
         }
       }
     };
@@ -189,7 +183,7 @@ export const Sidebar = () => {
             <h1>Conversaciones</h1>
           </div>
 
-          <div className="mt-2" ref={sidebarRoomItemRef}>
+          <div className="mt-2">
             <SidebarRoomItem></SidebarRoomItem>
           </div>
 
