@@ -1,7 +1,7 @@
 'use client';
 
 import React, { JSX, useEffect, useRef, useState } from 'react';
-import { IoSend, IoHappyOutline, IoAttachOutline, IoLogOutOutline } from "react-icons/io5";
+import { IoArrowUpCircleOutline, IoSend, IoHappyOutline, IoAttachOutline, IoLogOutOutline } from "react-icons/io5";
 import io, { Socket } from 'socket.io-client';
 import MediaDisplay from './MediaDisplay';
 import Cookies from 'js-cookie';
@@ -80,6 +80,13 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   const [groupedEmojis, setGroupedEmojis] = useState<{ [key: string]: Emoji[] }>({}); //agrupados por categorias
   const [emojiError, setEmojiError] = useState<string | null>(null); //errores
   const [room, setRoom] = useState<Room>()
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   const inputRef = useRef<HTMLInputElement | null>(null); //pos de selector
 
@@ -419,184 +426,185 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
   };
 
   return (
-    <div className="chat-container">
-      <div className="chat-header flex items-center justify-between p-4 space-x-2">
+    <>
+      <div className="chat-container">
+        <div className="chat-header flex items-center justify-between p-4 space-x-2">
 
-        <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
 
-          <img
-            src={(room?.image) ? `data:image/png;base64,${room.image}` : '/cloudWhite.png'}
-            alt="Logo"
-            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-          />
-          <span className="font-semibold text-lg">Sala {room?.name}</span>
+            <img
+              src={(room?.image) ? `data:image/png;base64,${room.image}` : '/cloudWhite.png'}
+              alt="Logo"
+              className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+            />
+            <span className="font-semibold text-lg">Sala {room?.name}</span>
+          </div>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+
+              <button
+                className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                aria-label="Salir de la sala"
+              >
+                <IoLogOutOutline size={24} />
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Estás seguro de que quieres salir?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta acción te sacará de la sala {(room?.name || 'actual')}. Puedes unirte de nuevo en cualquier momento si lo deseas.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                {/* Cuando se haga clic en este botón, se ejecutará handleConfirmLeave */}
+                <AlertDialogAction onClick={handleConfirmLeave}>
+                  Salir de la Sala
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
         </div>
 
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
+        {errorConexion && (
+          <div className="text-red-500 p-2 text-center">{errorConexion}</div>
+        )}
 
-            <button
-              className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-              aria-label="Salir de la sala"
-            >
-              <IoLogOutOutline size={24} />
-            </button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>¿Estás seguro de que quieres salir?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Esta acción te sacará de la sala {(room?.name || 'actual')}. Puedes unirte de nuevo en cualquier momento si lo deseas.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              {/* Cuando se haga clic en este botón, se ejecutará handleConfirmLeave */}
-              <AlertDialogAction onClick={handleConfirmLeave}>
-                Salir de la Sala
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-      </div>
-
-      {errorConexion && (
-        <div className="text-red-500 p-2 text-center">{errorConexion}</div>
-      )}
-
-      <div className="chat-messages flex-1 overflow-y-auto p-4 space-y-4">
-        {(messages.length < messagesLength) ? (
-          <div className="p-2 text-gray-500 dark:text-gray-400 text-center">
-            {/* Cargando mensajes o inicia una conversación... */}
-            <Spinner />
-          </div>
-        ) : (
-          messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex items-end gap-2 ${msg.user_id === currentUserData?.id
-                ? 'justify-end'
-                : 'justify-start'
-                }`}
-            >
-              {msg.user_id !== currentUserData?.id && (
-                <img
-                  src={(msg.profilePicture) ? `data:image/jpg;base64,${msg.profilePicture}` : '/cloudWhite.png'}
-                  alt="Perfil"
-                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                />
-              )}
-
+        <div className="chat-messages flex-1 overflow-y-auto p-4 space-y-4">
+          {(messages.length < messagesLength) ? (
+            <div className="p-2 text-gray-500 dark:text-gray-400 text-center">
+              {/* Cargando mensajes o inicia una conversación... */}
+              <Spinner />
+            </div>
+          ) : (
+            messages.map((msg) => (
               <div
-                className={`flex flex-col p-3 rounded-lg max-w-[80%] md:max-w-[60%] lg:max-w-[50%] relative shadow-md ${msg.user_id === currentUserData?.id
-                  ? 'bg-green-200 dark:bg-[#1694FA] rounded-br-none self-end text-right'
-                  : 'bg-white dark:bg-gray-700 rounded-bl-none self-start text-left'
+                key={msg.id}
+                className={`flex items-end gap-2 ${msg.user_id === currentUserData?.id
+                  ? 'justify-end'
+                  : 'justify-start'
                   }`}
               >
-                <span
-                  className={`font-bold text-sm mb-1 ${msg.user_id === currentUserData?.id
-                    ? 'text-[var(--foreground)]'
-                    : 'text-blue-600 dark:text-blue-300'
-                    }`}
-                >
-                  {msg.name}:
-                </span>
-
-                {msg.media && (
-                  <div className="my-2 max-w-full">
-                    <MediaDisplay
-                      media={msg.media}
-                      mimeType={msg.mimeType}
-                    />
-                  </div>
-                )}
-                <p className="text-gray-800 dark:text-gray-100 break-words whitespace-pre-wrap">
-                  {msg.text}
-                </p>
-                {msg.timestamp && (
-                  <span
-                    className={`text-xs mt-1 ${msg.user_id === currentUserData?.id
-                      ? 'text-green-700 dark:text-green-300'
-                      : 'text-gray-500 dark:text-gray-400'
-                      } self-end`}
-                  >
-                    {formatTime(msg.timestamp)}
-                  </span>
-                )}
-              </div>
-
-              {
-                msg.user_id === currentUserData?.id && (
+                {msg.user_id !== currentUserData?.id && (
                   <img
-                    src={(msg.profilePicture) ? `data:image/png;base64,${msg.profilePicture}` : '/cloudWhite.png'}
+                    src={(msg.profilePicture) ? `data:image/jpg;base64,${msg.profilePicture}` : '/cloudWhite.png'}
                     alt="Perfil"
                     className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                   />
-                )
-              }
-            </div>
-          ))
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+                )}
 
-      {/* Nuevo chat-input con flexbox y responsividad */}
-      <div className="chat-input flex flex-col gap-2 p-4 relative sm:flex-row sm:gap-2 sm:p-2 sm:items-center">
-        {/* Input de texto */}
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Escribe tu mensaje..."
-          className="chat-text-input flex-1 w-full order-1 sm:order-none" /* w-full y order para móviles */
-          disabled={!!errorConexion}
-          ref={inputRef}
-        />
+                <div
+                  className={`flex flex-col p-3 rounded-lg max-w-[80%] md:max-w-[60%] lg:max-w-[50%] relative shadow-md ${msg.user_id === currentUserData?.id
+                    ? 'bg-green-200 dark:bg-[#1694FA] rounded-br-none self-end text-right'
+                    : 'bg-white dark:bg-gray-700 rounded-bl-none self-start text-left'
+                    }`}
+                >
+                  <span
+                    className={`font-bold text-sm mb-1 ${msg.user_id === currentUserData?.id
+                      ? 'text-[var(--foreground)]'
+                      : 'text-blue-600 dark:text-blue-300'
+                      }`}
+                  >
+                    {msg.name}:
+                  </span>
 
-        {/* Contenedor de botones */}
-        <div className="flex justify-between items-center gap-2 w-full order-2 sm:w-auto sm:order-none"> {/* order para móviles */}
-          {/* Botón de adjuntar archivo */}
-          <div className="flex items-center gap-2"> {/* <-- ENVOLVER BOTÓN Y TEXTO */}
-            <button
-              onClick={handleFileButtonClick}
-              className="chat-action-button text-2xl"
-              disabled={!!errorConexion}
-              aria-label="Adjuntar archivo"
-            >
-              <IoAttachOutline />
-            </button>
-            {file && ( // <-- MOSTRAR EL NOMBRE DEL ARCHIVO SI 'file' EXISTE
-              <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[100px]">
-                {file.name}
-              </span>
-            )}
-          </div> {/* <-- FIN DEL CONTENEDOR */}
+                  {msg.media && (
+                    <div className="my-2 max-w-full">
+                      <MediaDisplay
+                        media={msg.media}
+                        mimeType={msg.mimeType}
+                      />
+                    </div>
+                  )}
+                  <p className="text-gray-800 dark:text-gray-100 break-words whitespace-pre-wrap">
+                    {msg.text}
+                  </p>
+                  {msg.timestamp && (
+                    <span
+                      className={`text-xs mt-1 ${msg.user_id === currentUserData?.id
+                        ? 'text-green-700 dark:text-green-300'
+                        : 'text-gray-500 dark:text-gray-400'
+                        } self-end`}
+                    >
+                      {formatTime(msg.timestamp)}
+                    </span>
+                  )}
+                </div>
+
+                {
+                  msg.user_id === currentUserData?.id && (
+                    <img
+                      src={(msg.profilePicture) ? `data:image/png;base64,${msg.profilePicture}` : '/cloudWhite.png'}
+                      alt="Perfil"
+                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                    />
+                  )
+                }
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Nuevo chat-input con flexbox y responsividad */}
+        <div className="chat-input flex flex-col gap-2 p-4 relative sm:flex-row sm:gap-2 sm:p-2 sm:items-center">
+          {/* Input de texto */}
           <input
-            type="file"
-            ref={fileInputRef}
-            onChange={(e) => {
-              if (e.target.files) {
-                setFile(e.target.files[0]);
-              }
-            }}
-            className="hidden-file-input"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Escribe tu mensaje..."
+            className="chat-text-input flex-1 w-full order-1 sm:order-none" /* w-full y order para móviles */
             disabled={!!errorConexion}
+            ref={inputRef}
           />
 
-          {/* Botón de Emoji */}
-          <button
-            onClick={handleEmojiPicker}
-            className="chat-action-button text-2xl"
-            disabled={!!errorConexion}
-            aria-label="Seleccionar emoji"
-          >
-            <IoHappyOutline />
-          </button>
+          {/* Contenedor de botones */}
+          <div className="flex justify-between items-center gap-2 w-full order-2 sm:w-auto sm:order-none"> {/* order para móviles */}
+            {/* Botón de adjuntar archivo */}
+            <div className="flex items-center gap-2"> {/* <-- ENVOLVER BOTÓN Y TEXTO */}
+              <button
+                onClick={handleFileButtonClick}
+                className="chat-action-button text-2xl"
+                disabled={!!errorConexion}
+                aria-label="Adjuntar archivo"
+              >
+                <IoAttachOutline />
+              </button>
+              {file && ( // <-- MOSTRAR EL NOMBRE DEL ARCHIVO SI 'file' EXISTE
+                <span className="text-sm text-gray-600 dark:text-gray-300 truncate max-w-[100px]">
+                  {file.name}
+                </span>
+              )}
+            </div> {/* <-- FIN DEL CONTENEDOR */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files) {
+                  setFile(e.target.files[0]);
+                }
+              }}
+              className="hidden-file-input"
+              disabled={!!errorConexion}
+            />
 
-          {/* Botón de micrófono o de audio por si llegamos a grabar audio jiji */}
-          {/* <button
+            {/* Botón de Emoji */}
+            <button
+              onClick={handleEmojiPicker}
+              className="chat-action-button text-2xl"
+              disabled={!!errorConexion}
+              aria-label="Seleccionar emoji"
+            >
+              <IoHappyOutline />
+            </button>
+
+            {/* Botón de micrófono o de audio por si llegamos a grabar audio jiji */}
+            {/* <button
             onClick={() => console.log('Micrófono presionado')}
             className="chat-action-button text-2xl"
             disabled={!!errorConexion}
@@ -605,45 +613,58 @@ export default function ChatTemplate({ roomId }: { roomId: string }): JSX.Elemen
             <IoMicOutline />
           </button> */}
 
-          {/* Botón de enviar al final de los botones en móvil, al final de la fila en desktop) */}
-          <button
-            onClick={handleSend}
-            className="chat-send-button text-2xl ml-auto sm:ml-0"
-            disabled={!!errorConexion || (input.trim() === '' && !file)}
-            aria-label="Enviar mensaje"
-          >
-            <IoSend />
-          </button>
-        </div>
-
-        {showEmojiPicker && (
-          <div className="emoji-picker-container absolute bottom-[calc(100%+0.5rem)] right-0 bg-white border border-gray-300 rounded-lg shadow-xl overflow-y-auto max-h-[50vh] w-full md:w-[400px] z-20 dark:bg-gray-800 dark:border-gray-700">
-            {emojiError && <div className="p-3 text-center text-red-500 bg-red-100 border-b border-red-200">{emojiError}</div>}
-
-            {Object.keys(groupedEmojis).length > 0 ? (
-              Object.keys(groupedEmojis).map((groupName) => (
-                <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0 dark:border-gray-700">
-                  <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize dark:text-gray-300">{groupName.replace(/-/g, ' ')}</h3>
-                  <div className="grid grid-cols-8 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-7 xl:grid-cols-6 gap-1">
-                    {groupedEmojis[groupName]?.map((emoji) => (
-                      <span
-                        key={emoji.unicodeName}
-                        className="text-2xl sm:text-3xl lg:text-4xl text-center cursor-pointer select-none p-1 rounded-md hover:bg-gray-100 transition-colors duration-150 dark:hover:bg-gray-700"
-                        onClick={() => handleSelectEmoji(emoji.character)}
-                        title={emoji.unicodeName}
-                      >
-                        {emoji.character}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))
-            ) : (
-              !emojiError && <div className="p-3 text-center text-gray-500 dark:text-gray-400">Cargando emojis...</div>
-            )}
+            {/* Botón de enviar al final de los botones en móvil, al final de la fila en desktop) */}
+            <button
+              onClick={handleSend}
+              className="chat-send-button text-2xl ml-auto sm:ml-0"
+              disabled={!!errorConexion || (input.trim() === '' && !file)}
+              aria-label="Enviar mensaje"
+            >
+              <IoSend />
+            </button>
           </div>
-        )}
-      </div>
-    </div >
+
+          {showEmojiPicker && (
+            <div className="emoji-picker-container absolute bottom-[calc(100%+0.5rem)] right-0 bg-white border border-gray-300 rounded-lg shadow-xl overflow-y-auto max-h-[50vh] w-full md:w-[400px] z-20 dark:bg-gray-800 dark:border-gray-700">
+              {emojiError && <div className="p-3 text-center text-red-500 bg-red-100 border-b border-red-200">{emojiError}</div>}
+
+              {Object.keys(groupedEmojis).length > 0 ? (
+                Object.keys(groupedEmojis).map((groupName) => (
+                  <div key={groupName} className="p-3 border-b border-gray-200 last:border-b-0 dark:border-gray-700">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-2 capitalize dark:text-gray-300">{groupName.replace(/-/g, ' ')}</h3>
+                    <div className="grid grid-cols-8 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-7 xl:grid-cols-6 gap-1">
+                      {groupedEmojis[groupName]?.map((emoji) => (
+                        <span
+                          key={emoji.unicodeName}
+                          className="text-2xl sm:text-3xl lg:text-4xl text-center cursor-pointer select-none p-1 rounded-md hover:bg-gray-100 transition-colors duration-150 dark:hover:bg-gray-700"
+                          onClick={() => handleSelectEmoji(emoji.character)}
+                          title={emoji.unicodeName}
+                        >
+                          {emoji.character}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                !emojiError && <div className="p-3 text-center text-gray-500 dark:text-gray-400">Cargando emojis...</div>
+              )}
+            </div>
+          )}
+        </div>
+      </div >
+      <button
+        onClick={scrollToTop}
+        className="fixed bottom-4 left-1/2 -translate-x-1/2
+                 bg-transparent border border-blue-500 text-blue-500
+                 hover:bg-blue-500 hover:text-white
+                 p-2 rounded-full shadow-lg
+                 transition-all duration-300 ease-in-out z-50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75
+                 md:hidden lg:hidden xl:hidden 2xl:hidden"
+        aria-label="Ir arriba de la página"
+      >
+        <IoArrowUpCircleOutline size={24} />
+      </button>
+    </>
   );
 }
