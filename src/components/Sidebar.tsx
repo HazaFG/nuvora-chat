@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image"
 import { IoPersonCircleOutline, IoAddCircleOutline, IoTrashOutline, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { SidebarMenuItem } from "./SidebarMenuItem";
@@ -16,11 +16,6 @@ const BACKEND_LOGOUT_URL = `${BACKEND_API_BASE_URL}/api/auth/logout`;
 
 //Aqui vamos a traernos en forma de arreglo todo nuestos elementos de SideBarMenuItem
 const menuItems = [
-  // {
-  //   path: '/dashboard/main',
-  //   icon: <IoChatboxEllipsesOutline size={22} />,
-  //   name: 'Conversaciones'
-  // },
   {
     path: '/dashboard/createRooms',
     icon: <IoAddCircleOutline size={22} />,
@@ -54,6 +49,10 @@ export const Sidebar = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
+  const sidebarRef = useRef<HTMLElement>(null);
+  const sidebarRoomItemRef = useRef<HTMLDivElement>(null); // con esta linea pedorra evitamos que se cierre el boton de los chats cuando se preionee
+
+
 
   const handleCerrarSesion = async () => {
     setLoading(true);
@@ -105,6 +104,38 @@ export const Sidebar = () => {
     return { handleCerrarSesion, loading, error, success };
   }
 
+  useEffect(() => {
+    const handleSidebarClick = (event: MouseEvent) => {
+      const isSmallScreen = window.innerWidth < 768;
+
+      if (isSmallScreen && sidebarRef.current && isOpen) {
+        const target = event.target as HTMLElement;
+
+        if (sidebarRoomItemRef.current && sidebarRoomItemRef.current.contains(target)) {
+          return;
+        }
+
+        const isLinkOrButton = target.closest('a') || target.closest('button');
+        const isMenuToggleButton = target.closest('button.sm\\:hidden');
+
+        if (isLinkOrButton && !isMenuToggleButton) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    if (sidebarRef.current) {
+      sidebarRef.current.addEventListener('click', handleSidebarClick);
+    }
+
+    return () => {
+      if (sidebarRef.current) {
+        sidebarRef.current.removeEventListener('click', handleSidebarClick);
+      }
+    };
+  }, [isOpen]);
+
+
 
   return (
     <>
@@ -125,6 +156,7 @@ export const Sidebar = () => {
         className={`z-99 fixed top-0 left-0 w-64 h-screen transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
           } sm:translate-x-0`}
         aria-label="Sidebar"
+        ref={sidebarRef}
       >
         {/*Este es el container perro*/}
         {loading && <Spinner />}
@@ -157,7 +189,7 @@ export const Sidebar = () => {
             <h1>Conversaciones</h1>
           </div>
 
-          <div className="mt-2">
+          <div className="mt-2" ref={sidebarRoomItemRef}>
             <SidebarRoomItem></SidebarRoomItem>
           </div>
 
@@ -184,10 +216,8 @@ export const Sidebar = () => {
             style={{ color: 'var(--sidebar-text)' }}
           >
             {theme === 'dark' ? (
-              // Usa la clase 'menu-icon' para que herede los estilos de color de icono
               <IoSunnyOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
             ) : (
-              // Usa la clase 'menu-icon' para que herede los estilos de color de icono
               <IoMoonOutline size={22} className="shrink-0 w-5 h-5 transition duration-75 menu-icon" />
             )}
             <span className="ml-3 whitespace-nowrap">
